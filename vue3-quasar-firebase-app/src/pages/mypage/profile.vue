@@ -1,6 +1,6 @@
 <template>
-  <div class="text-h4">
-    Temp
+  <div>
+    <div class="text-h5">MyPage/Profile</div>
   </div>
 </template>
 

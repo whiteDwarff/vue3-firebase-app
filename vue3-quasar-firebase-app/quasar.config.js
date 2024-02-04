@@ -60,7 +60,7 @@ module.exports = configure(function (/* ctx */) {
         node: 'node16'
       },
 
-      vueRouterMode: 'hash', // available values: 'hash', 'history'
+      vueRouterMode: 'history', // available values: 'hash', 'history'
       // vueRouterBase,
       // vueDevtools,
       // vueOptionsAPI: false,
@@ -81,6 +81,7 @@ module.exports = configure(function (/* ctx */) {
 
       
       vitePlugins: [
+        // unplugin-vue-router
         [ 'unplugin-vue-router/vite', 
           {
             // unplugin-vue-router의 route 경로에서 제외할 목록 
@@ -104,6 +105,9 @@ module.exports = configure(function (/* ctx */) {
               }
             ]
           }
+        ],
+        // vite-plugin-vue-layouts
+        ['vite-plugin-vue-layouts',  {}
         ]
       ]
     },

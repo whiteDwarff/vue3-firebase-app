@@ -80,9 +80,32 @@ module.exports = configure(function (/* ctx */) {
       // viteVuePluginOptions: {},
 
       
-      // vitePlugins: [
-      //   [ 'package-name', { ..options.. } ]
-      // ]
+      vitePlugins: [
+        [ 'unplugin-vue-router/vite', 
+          {
+            // unplugin-vue-router의 route 경로에서 제외할 목록 
+            // 모든 경로의 / 컴포넌트 폴더의 / 모든 파일
+            exclude: ['**/components/**'],
+            routesFolder: [
+              {
+                /*
+                  default 값,
+                  해당 경로는 path가 default로 ''가 잡혀있다.
+                */
+                src: 'src/pages',
+              },
+              /*
+                사용자의 정의 값,
+                src 하위의 pages 경로가 아닌 다른 폴더구조로 route 경로 설정 가능 ( path 설정 필요 )
+              */
+              {
+                src: 'src/docs',
+                path: 'docs/',
+              }
+            ]
+          }
+        ]
+      ]
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-js#devServer

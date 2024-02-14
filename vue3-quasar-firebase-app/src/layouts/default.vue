@@ -71,11 +71,11 @@ const route = useRoute();
 const pageContainerStyles = computed(() => ({
   // route의 meta 속성에 width가 있다면 width, 없다면 1080px 
   // <router lang="yaml"> 속성
-  maxWidth :  route.meta?.width || '10080px',
+  maxWidth :  route.meta?.width || '1080px',
   margin : '0 auto',
 }));
 
-const authDialog = ref(true);
+const authDialog = ref(false);
 const openAuthDialog = () => authDialog.value = true;
 
 </script>

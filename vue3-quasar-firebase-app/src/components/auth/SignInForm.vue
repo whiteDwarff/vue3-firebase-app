@@ -15,6 +15,7 @@
         
         <div class="flex justify-between">
           <q-btn 
+          @click="$emit('changeView', 'FindPasswordForm')"
             label="비밀번호 찾기" 
             color="secondary" 
             flat 
@@ -22,6 +23,7 @@
             size="13px"
           />
           <q-btn
+            @click="$emit('changeView', 'SignUpForm')"
             label="이메일 가입하기"
             color="secondary" 
             flat 
@@ -29,7 +31,8 @@
             size="13px" 
           />
         </div>
-      </div>
+    </div>
+      
       <q-separator />
       <q-btn 
         label="구글 계정으로 로그인하기"
@@ -43,7 +46,7 @@
 </template>
 
 <script setup>
-
+defineEmits(['changeView']);
 </script>
 
 <style lang="scss" scoped></style>

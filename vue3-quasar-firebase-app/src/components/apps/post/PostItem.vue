@@ -19,7 +19,7 @@
           {{ category }}
         </q-chip>
       </div>
-      <div class="text-h5 q-mt-sm">{{ title }}</div>
+      <div class="text-h6 q-mt-sm">{{ title }}</div>
       <div class="text-primary text-caption">
         <span
           v-for="tag of tags" :key="tag"
@@ -28,7 +28,7 @@
           #{{ tag }}
         </span>
       </div>
-      <div class="text-grey-6 q-my-sm">{{ content }}</div>
+      <div class="text-grey-6 q-my-sm ellipsis-2-lines">{{ content }}</div>
 
       <!-- icon box -->
       <div class="row items-center">

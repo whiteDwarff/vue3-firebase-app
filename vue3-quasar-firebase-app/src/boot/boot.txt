@@ -1,0 +1,19 @@
+// Model Install 후 quasar new boot '파일명'
+
+
+---------------------------------------------------------------------------------
+# 터미널
+
+whitedwarff@whiteDwarffui-MacBookAir vue3-quasar-firebase-app % quasar new boot firebase
+
+ App • Generated boot: src/boot/firebase.js
+ App • Make sure to reference it in quasar.config.js > boot
+---------------------------------------------------------------------------------
+# quasar.cofigs.js
+
+boot: [
+  '파일명'
+]
+---------------------------------------------------------------------------------
+
+등록 후 사용!!

@@ -15,7 +15,10 @@
       >
         <q-icon name="edit" size="14px"/>
       </q-avatar>
-      <span class="text-weight-bold">새 포스트 작성하기</span>
+      <span
+        @click="$emit('openWriteDialog')"
+        class="text-weight-bold"
+      >새 포스트 작성하기</span>
     </q-btn>
 
     <q-card class="q-mt-md bg-grey-1" bordered flat>
@@ -82,6 +85,8 @@
 import { ref } from 'vue';
 import StickySideBar from 'src/components/StickySideBar.vue';
 
+
+defineEmits(['openWriteDialog'])
 const tags = ref([
   {name: 'vuejs', count: 10},
   {name: 'react', count: 53},

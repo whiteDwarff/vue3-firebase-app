@@ -1,0 +1,36 @@
+import { boot } from 'quasar/wrappers'
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+import { getAuth } from "firebase/auth";
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA84NVhaVbOjytA-oZhg3ssrugArQg_5y8",
+  authDomain: "vue3-firebase-app-98131.firebaseapp.com",
+  projectId: "vue3-firebase-app-98131",
+  storageBucket: "vue3-firebase-app-98131.appspot.com",
+  messagingSenderId: "1004179385645",
+  appId: "1:1004179385645:web:c5e8bf99b5852c8eee37a4",
+  measurementId: "G-RQYC051B73"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+/* 
+  Authentication SDK 추가 및 초기화
+  https://firebase.google.com/docs/auth/web/start?hl=ko&authuser=0&_gl=1*1va27e2*_up*MQ..*_ga*ODIyMDcwNTA2LjE3MDgyNjExNDc.*_ga_CW55HF8NVT*MTcwODI2MTE0Ny4xLjEuMTcwODI2MTY5Ny4wLjAuMA..
+*/
+const auth = getAuth(app);
+
+export {
+  auth,
+}
+
+
+// "async" is optional;
+// more info on params: https://v2.quasar.dev/quasar-cli/boot-files
+export default boot(async (/* { app, router, ... } */) => {
+  // something to do
+})

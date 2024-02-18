@@ -1,0 +1,19 @@
+#<q-chip>
+
+- chip, border-box 내부에 작은 텍스트가 들어간 요소
+
+------------
+
+### option
+- removable 
+  chip 내부에 X 모양의 아이콘 생성
+
+
+### func
+- @remove=""
+  삭제 시 발생하는 이벤트 정의
+
+
+
+
+

@@ -22,21 +22,21 @@
           label="수강하기"
           href="https://google.com"
           target="_blank"
-          />
+        />
         <q-btn 
           stretch
           flat 
           label="온라인 강의"
           href="https://edu.gymcoading.co"
           target="_blank"
-          />
+        />
         <q-btn 
           stretch
           flat 
           label="유튜브"
           href="https://youtube.com"
           target="_blank"
-          />
+        />
     
         <q-separator class="q-my-md q-mr-md" vertical />
 
@@ -47,6 +47,23 @@
           color="primary" 
           label="로그인 / 회원가입"
         />
+
+        <!-- 로그인 시  사용자 썸네일 노출-->
+        <q-btn round flat>
+          <q-avatar>
+            <img src="https://cdn.quasar.dev/img/avatar.png">
+          </q-avatar>
+          <q-menu>
+            <q-list style="min-width: 100px">
+              <q-item clickable v-close-popup to="/mypage/profile">
+                <q-item-section>프로필</q-item-section>
+              </q-item>
+              <q-item clickable v-close-popup>
+                <q-item-section>로그아웃</q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-btn>
       </q-toolbar>
     </q-header>
 

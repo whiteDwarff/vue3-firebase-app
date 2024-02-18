@@ -12,7 +12,8 @@ borderless : border 제거
 
 q-padding  : 요소에 상하좌우 패딩 조금 추가
 
-side       : 요소를 맨 끝에 배치 ?
+side       : 요소를 맨 끝에 배치
+top        : 요소를 상단에 배치
 
 
 

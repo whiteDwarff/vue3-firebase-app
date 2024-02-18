@@ -1,0 +1,13 @@
+#<q-dialog></q-dialog>
+
+- popup view 
+
+--------------------
+### option
+- persistent
+    backgroud를 클릭해도 dialog가 비활성화 되지 않음
+
+
+### fun
+- hide=""
+  dialog가 닫힐 때 발생할 이벤트를 정의할 수 있음

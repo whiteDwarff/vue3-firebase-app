@@ -35,6 +35,7 @@
       
       <q-separator />
       <q-btn 
+        @click="handleSignInGoogle"
         label="구글 계정으로 로그인하기"
         class="full-width" 
         unelevated 
@@ -46,7 +47,13 @@
 </template>
 
 <script setup>
+import { signInWithGoogle } from 'src/service/auth';
 defineEmits(['changeView']);
+
+// Google Login
+const handleSignInGoogle = async () => {
+  await signInWithGoogle();
+}
 </script>
 
 <style lang="scss" scoped></style>

@@ -41,6 +41,7 @@
         <q-separator class="q-my-md q-mr-md" vertical />
 
         <q-btn 
+          v-if="!authStore.isAuthenticated"
           @click="openAuthDialog"
           unelevated 
           rounded 
@@ -49,16 +50,16 @@
         />
 
         <!-- 로그인 시  사용자 썸네일 노출-->
-        <q-btn round flat>
+        <q-btn  v-if="authStore.isAuthenticated" round flat>
           <q-avatar>
-            <img src="https://cdn.quasar.dev/img/avatar.png">
+            <img :src="authStore.user.photoURL">
           </q-avatar>
           <q-menu>
             <q-list style="min-width: 100px">
               <q-item clickable v-close-popup to="/mypage/profile">
                 <q-item-section>프로필</q-item-section>
               </q-item>
-              <q-item clickable v-close-popup>
+              <q-item @click="handleLogOut" clickable v-close-popup>
                 <q-item-section>로그아웃</q-item-section>
               </q-item>
             </q-list>
@@ -79,11 +80,18 @@
 <script setup>
 import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
-
+import { userAuthStore } from 'src/stores/auth';
+import { logOut } from 'src/service/auth';
 import AuthDialog from 'src/components/auth/AuthDialog.vue';
 
+const authStore = userAuthStore();
 
 const route = useRoute();
+
+const handleLogOut = async () => {
+  await logOut();
+}
+
 
 const pageContainerStyles = computed(() => ({
   // route의 meta 속성에 width가 있다면 width, 없다면 1080px 

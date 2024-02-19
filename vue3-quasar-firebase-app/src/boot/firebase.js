@@ -1,10 +1,9 @@
 import { boot } from 'quasar/wrappers'
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
-import { getAuth } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
-
+import { userAuthStore } from 'src/stores/auth';
 const firebaseConfig = {
   apiKey: "AIzaSyA84NVhaVbOjytA-oZhg3ssrugArQg_5y8",
   authDomain: "vue3-firebase-app-98131.firebaseapp.com",
@@ -28,9 +27,12 @@ export {
   auth,
 }
 
-
-// "async" is optional;
-// more info on params: https://v2.quasar.dev/quasar-cli/boot-files
 export default boot(async (/* { app, router, ... } */) => {
-  // something to do
+
+  const authStore = userAuthStore();
+  // 사용자의 상태를 관찰하는 관찰자 함수 (로그인, 로그아웃 시 실행되는 메서드)
+  onAuthStateChanged(auth, (user) => {
+    console.log('###user : ', user);
+    authStore.setUser(user);
+  })
 })

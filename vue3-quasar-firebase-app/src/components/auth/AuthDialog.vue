@@ -41,6 +41,7 @@
           <component 
             :is="authViewComponents[viewMode]" 
             @change-view="changeViewMode"
+            @close-dialog="closeDialog"
           />
       </q-card-section>
       
@@ -62,7 +63,7 @@ defineProps({
   }
 });
 
-defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue']);
 
 // --------------------------------------------------
 // 반응형 상태 값
@@ -75,7 +76,6 @@ const authViewComponents = {
   SignUpForm: defineAsyncComponent(() => import('./SignUpForm.vue')),
   FindPasswordForm: defineAsyncComponent(() => import('./FindPasswordForm.vue'))
 };
-
 /*
 const authViewComponents = {
   SignInForm,
@@ -83,6 +83,10 @@ const authViewComponents = {
   FindPasswordForm
 };
 */
+
+const closeDialog = () => {
+  emit('update:modelValue', false);
+}
 
 </script>
 

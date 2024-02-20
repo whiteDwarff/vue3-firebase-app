@@ -52,7 +52,7 @@
         <!-- 로그인 시  사용자 썸네일 노출-->
         <q-btn  v-if="authStore.isAuthenticated" round flat>
           <q-avatar>
-            <img :src="authStore.user.photoURL">
+            <img :src="authStore.user.photoURL || generageDefaultPhotoURL(authStore.user.uid)">
           </q-avatar>
           <q-menu>
             <q-list style="min-width: 100px">
@@ -81,7 +81,7 @@
 import { computed, ref } from 'vue';
 import { useRoute } from 'vue-router';
 import { userAuthStore } from 'src/stores/auth';
-import { logOut } from 'src/service/auth';
+import { logOut, generageDefaultPhotoURL } from 'src/service';
 import AuthDialog from 'src/components/auth/AuthDialog.vue';
 
 const authStore = userAuthStore();

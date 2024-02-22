@@ -79,19 +79,27 @@
 
 <script setup>
 import { computed, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { userAuthStore } from 'src/stores/auth';
 import { logOut, generageDefaultPhotoURL } from 'src/service';
+import { useQuasar } from 'quasar';
 import AuthDialog from 'src/components/auth/AuthDialog.vue';
 
+const $q = useQuasar();
 const authStore = userAuthStore();
-
 const route = useRoute();
+const router = useRouter();
 
+/**
+ * @summary : 로그아웃
+ * @role    : 
+ * @params  : 
+ */
 const handleLogOut = async () => {
   await logOut();
+  $q.notify('로그아웃 되었습니다.');
+  router.push('/');
 }
-
 
 const pageContainerStyles = computed(() => ({
   // route의 meta 속성에 width가 있다면 width, 없다면 1080px 
@@ -104,18 +112,3 @@ const authDialog = ref(false);
 const openAuthDialog = () => authDialog.value = true;
 
 </script>
-<!--
-  - elevated : box-shadow 
-  - flat     : 배경을 투명하게 
-  - unelevated : 그림자 제거 
-
-  - rounded : border-radius 추가 ( 둥글게 )
-
-  - dense    : 버튼을 얇게 만듬
-
-  - bg-white : background-color: white
-  - color-primary : 배경을 primary color로 변경 
-  - text-grey-9 : color: grey
-
-  - bordered : border-bottom
--->

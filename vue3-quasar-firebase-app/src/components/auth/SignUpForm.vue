@@ -32,7 +32,7 @@ import { ref } from 'vue';
 import { useQuasar } from 'quasar'; // 컴포저블 함수 
 import { signUpWithEmail } from 'src/service';
 
-defineEmits(['changeView', 'closeDialog']);
+const emit = defineEmits(['changeView', 'closeDialog']);
 
 const $q = useQuasar();
 
@@ -44,7 +44,7 @@ const form = ref({
 
 const handleSubmit = async () => {
   await signUpWithEmail(form.value);
-  $q.notify('가입을 환영합니다.');
+  $q.notify('회원가입이 완료되었습니다.');
   emit('closeDialog');
 }
 </script>

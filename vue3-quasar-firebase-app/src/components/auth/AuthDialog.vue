@@ -36,7 +36,6 @@
             />
           -->
 
-
           <!-- Dynamic Component -->
           <component 
             :is="authViewComponents[viewMode]" 
@@ -76,6 +75,7 @@ const authViewComponents = {
   SignUpForm: defineAsyncComponent(() => import('./SignUpForm.vue')),
   FindPasswordForm: defineAsyncComponent(() => import('./FindPasswordForm.vue'))
 };
+// --------------------------------------------------
 /*
 const authViewComponents = {
   SignInForm,

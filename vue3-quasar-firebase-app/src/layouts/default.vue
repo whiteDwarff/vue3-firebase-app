@@ -55,9 +55,26 @@
             <img :src="authStore.user.photoURL || generageDefaultPhotoURL(authStore.user.uid)">
           </q-avatar>
           <q-menu>
-            <q-list style="min-width: 100px">
-              <q-item clickable v-close-popup to="/mypage/profile">
-                <q-item-section>프로필</q-item-section>
+            <q-list style="min-width: 170px">
+              <!-- 이메일 인증이 완료된  사용자  -->
+            <q-item 
+              v-if="authStore.user.emailVerified"
+              clickable
+              v-close-popup
+              to="/mypage/profile"
+            >
+              <q-item-section>프로필</q-item-section>
+            </q-item>
+            <!-- 이메일 인증이 완료되지 않은 사용자 -->
+              <q-item 
+                v-else
+                clickable
+                v-close-popup
+              >
+                <q-item-section 
+                  @click="verifyEmail"
+                  class="text-red"
+                >이메일을 인증해주세요.</q-item-section>
               </q-item>
               <q-item @click="handleLogOut" clickable v-close-popup>
                 <q-item-section>로그아웃</q-item-section>
@@ -81,7 +98,7 @@
 import { computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { userAuthStore } from 'src/stores/auth';
-import { logOut, generageDefaultPhotoURL } from 'src/service';
+import { logOut, generageDefaultPhotoURL, sendVerificationEmail } from 'src/service';
 import { useQuasar } from 'quasar';
 import AuthDialog from 'src/components/auth/AuthDialog.vue';
 
@@ -90,15 +107,19 @@ const authStore = userAuthStore();
 const route = useRoute();
 const router = useRouter();
 
-/**
- * @summary : 로그아웃
- * @role    : 
- * @params  : 
- */
 const handleLogOut = async () => {
   await logOut();
   $q.notify('로그아웃 되었습니다.');
   router.push('/');
+}
+
+const verifyEmail = async () => {
+  try {
+    await sendVerificationEmail();
+    $q.notify('이메일로 인증메일을 발송하였습니다.');
+  } catch({code}) {
+    return code == 'auth/network-request-failed' ? $q.notify('네트워크 연결이 원활하지 않습니다') : '';
+  }
 }
 
 const pageContainerStyles = computed(() => ({

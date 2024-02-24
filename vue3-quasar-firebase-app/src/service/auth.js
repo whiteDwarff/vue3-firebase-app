@@ -1,4 +1,4 @@
-import { GoogleAuthProvider, createUserWithEmailAndPassword, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup, signOut, updatePassword, updateProfile } from "firebase/auth";
+import { GoogleAuthProvider, createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword, signInWithPopup, signOut, updateEmail, updatePassword, updateProfile } from "firebase/auth";
 import { auth } from "src/boot/firebase";
 
 /*
@@ -47,8 +47,10 @@ export async function signUpWithEmail({email, password, nickname}) {
       photoURL : generageDefaultPhotoURL(user.uid)
     });
   } catch(err) {
-    console.log(err)
+    console.log(err);
   }
+  // 이메일로 가입하면 즉시 인증 이메일을 발송
+  sendVerificationEmail();
 }
 /**
  * @smmary : 기존 사용자 로그인
@@ -77,6 +79,33 @@ export async function sendPasswordReset(email) {
  */
 export async function updateUserPassword(newPassword) {
   await updatePassword(auth.currentUser, newPassword);
+}
+/**
+ * @summary : 사용자에게 인증 이메일 보내기
+ * @role    : 인증이 완료되지 않은 사용자는 프로필 기능을 이용할 수 없다.
+ * @params  : auth.currentUser
+ * @url     : https://firebase.google.com/docs/auth/web/manage-users?hl=ko&_gl=1*1vo30m7*_up*MQ..*_ga*MTM3MTU1NzE5Mi4xNzA4NzU4NTk4*_ga_CW55HF8NVT*MTcwODc1ODU5OC4xLjAuMTcwODc1ODU5OC4wLjAuMA..
+ */
+export async function sendVerificationEmail() {
+  await sendEmailVerification(auth.currentUser)
+}
+/**
+ * @summary : 사용자 프로필 업데이트
+ * @role    : 사용자는 프로필을 변경할 수 있다.
+ * @params  : auth.currentUser, displayName
+ * @url     : https://firebase.google.com/docs/auth/web/manage-users?hl=ko&_gl=1*1vo30m7*_up*MQ..*_ga*MTM3MTU1NzE5Mi4xNzA4NzU4NTk4*_ga_CW55HF8NVT*MTcwODc1ODU5OC4xLjAuMTcwODc1ODU5OC4wLjAuMA..
+*/
+export async function updateUserProfile(displayName) {
+  await updateProfile(auth.currentUser, { displayName });
+}
+/**
+ * @summary : 사용자 이메일 주소 설정
+ * @role    : 사용자는 이메일 주소를 변경할 수 있다.
+ * @params  : auth.currentUser, email
+ * @url     : https://firebase.google.com/docs/auth/web/manage-users?hl=ko&_gl=1*1vo30m7*_up*MQ..*_ga*MTM3MTU1NzE5Mi4xNzA4NzU4NTk4*_ga_CW55HF8NVT*MTcwODc1ODU5OC4xLjAuMTcwODc1ODU5OC4wLjAuMA..
+ */
+export async function updateUserEmail(email) {
+  await updateEmail(auth.currentUser, {email});
 }
 
 

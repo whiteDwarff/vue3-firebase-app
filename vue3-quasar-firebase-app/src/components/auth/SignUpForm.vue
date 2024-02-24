@@ -44,9 +44,26 @@ const form = ref({
 
 const handleSubmit = async () => {
   await signUpWithEmail(form.value);
-  $q.notify('회원가입이 완료되었습니다.');
+  $q.notify({
+    // html 속성이 true라면 html 형식으로 notify를 보여줄 수 있다.
+    message:
+      `
+      <div class="text-center">
+        <span>회원가입이 완료되었습니다.</span> <br>
+        <span>이메일에서 인증 링크를 확인해주세요.</span>
+      </div>`,
+    html: true,
+  });
   emit('closeDialog');
 }
+
+  // $q.notify({
+  //     progress: true,
+  //     message: '세라에게 메일 왔어요.',
+  //     icon: 'mail',
+  //     color: 'white',
+  //     textColor: 'indigo'
+  //   })
 </script>
 
 <style lang="scss" scoped></style>

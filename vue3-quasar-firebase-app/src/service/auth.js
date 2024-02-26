@@ -105,14 +105,17 @@ export async function updateUserProfile(displayName) {
  * @url     : https://firebase.google.com/docs/auth/web/manage-users?hl=ko&_gl=1*1vo30m7*_up*MQ..*_ga*MTM3MTU1NzE5Mi4xNzA4NzU4NTk4*_ga_CW55HF8NVT*MTcwODc1ODU5OC4xLjAuMTcwODc1ODU5OC4wLjAuMA..
  */
 export async function updateUserEmail(email) {
-  await updateEmail(auth.currentUser, {email});
+  await updateEmail(auth.currentUser, email);
 }
 
 
 /**
  * @exception 
+ * @DOC : https://firebase.google.com/docs/auth/admin/errors?hl=ko&_gl=1*zqtsga*_up*MQ..*_ga*MTQyMjM2NDgzMy4xNzA4OTU0MjU5*_ga_CW55HF8NVT*MTcwODk1NDI1OS4xLjAuMTcwODk1NDI1OS4wLjAuMA..
  * 
  * auth/network-request-failed : 네트워크 연결 실패
  * auth/invalid-email          : 존재하지 않는 이메일
  * auth/invalid-credential     : 존재하지 않는 패스워드
+ * 
+ * 
  */

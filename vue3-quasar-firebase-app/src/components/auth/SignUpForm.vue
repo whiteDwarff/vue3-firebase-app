@@ -51,6 +51,7 @@
         class="full-width" 
         unelevated
         color="primary" 
+        :loading="isLoading"
       />
       <q-separator />
 
@@ -70,6 +71,7 @@ import { ref } from 'vue';
 import { useQuasar } from 'quasar'; // 컴포저블 함수 
 import { signUpWithEmail } from 'src/service';
 import { validateRequired,  validateEmail, validatePassword, validatePasswordConfirm } from 'src/utils/validate-rules';
+import { getErrorMessage } from 'src/utils/firebase/error-message';
 
 const emit = defineEmits(['changeView', 'closeDialog']);
 
@@ -81,21 +83,28 @@ const form = ref({
   password: '',
 });
 const passwordConfirm = ref('');
+const isLoading = ref(false);
 
 const handleSubmit = async () => {
-  console.log('handleSubmit')
-  await signUpWithEmail(form.value);
-  $q.notify({
-    // html 속성이 true라면 html 형식으로 notify를 보여줄 수 있다.
-    message:
+  try {
+    isLoading.value = true;
+    await signUpWithEmail(form.value);
+    $q.notify({
+      // html 속성이 true라면 html 형식으로 notify를 보여줄 수 있다.
+      message:
       `
       <div class="text-center">
         <span>회원가입이 완료되었습니다.</span> <br>
         <span>이메일에서 인증 링크를 확인해주세요.</span>
-      </div>`,
-    html: true,
-  });
-  emit('closeDialog');
+        </div>`,
+        html: true,
+      });
+      emit('closeDialog');
+  } catch({code}) {
+    getErrorMessage(code);
+  } finally {
+    isLoading.value = false;
+  }
 }
 </script>
 

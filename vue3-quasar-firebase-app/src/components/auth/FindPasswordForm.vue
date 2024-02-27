@@ -7,6 +7,8 @@
         outlined
         dense 
         placeholder="가입한 이메일"
+        hide-bottom-space
+        :rules="[validateRequired, validateEmail]"
       />
       <q-btn
         type="submit"
@@ -31,6 +33,8 @@
 import { ref } from 'vue'
 import { useQuasar } from 'quasar';
 import { sendPasswordReset } from "/src/service/index"
+import { getErrorMessage } from 'src/utils/firebase/error-message';
+import { validateRequired,  validateEmail } from 'src/utils/validate-rules';
 
 const $q = useQuasar();
 
@@ -43,8 +47,8 @@ const handleSubmit = async () => {
     await sendPasswordReset(email.value);
     $q.notify('이메일로 비밀번호 재설정 링크를 발송하였습니다.');
     emit('closeDialog')
-  } catch(err) {
-    return err.code == 'auth/invalid-email' ? $q.notify('가입되지 않은 이메일입니다.') : $q.notify('네트워크 연결이 원활하지 않습니다.');
+  } catch({code}) {
+    getErrorMessage(code);
   }
 }
 </script>

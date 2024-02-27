@@ -8,17 +8,19 @@
         placeholder="이메일"
         outlined 
         dense
-      />
-      <q-input
+        hide-bottom-space
+        :rules="[validateRequired, validateEmail]"
+        />
+        <q-input
         v-model="form.password"
         type="password"
         placeholder="비밀번호"
         outlined 
         dense
-      />
+        hide-bottom-space
+        :rules="[validateRequired, validatePassword]"
+        />
       
-      <!-- <DIsplayError :code="error?.code"/> -->
-
       <div>
         <q-btn
           type="submit"
@@ -48,7 +50,6 @@
           />
         </div>
     </div>
-      
       <q-separator />
       <q-btn 
         @click="handleSignInGoogle"
@@ -67,6 +68,7 @@ import { signInWithGoogle, signInWithEmail } from 'src/service/auth';
 import { useQuasar } from 'quasar'; // 컴포저블 함수 
 import { ref } from 'vue';
 import { getErrorMessage } from 'src/utils/firebase/error-message.js';
+import { validateRequired,  validateEmail, validatePassword } from 'src/utils/validate-rules';
 
 
 const emit = defineEmits(['changeView', 'closeDialog']);
@@ -77,37 +79,28 @@ const form = ref({
   password: '',
 });
 const isLoading = ref(false);
-const error = ref(null);
 
 // Google Login
 const handleSignInGoogle = async () => {
-  isLoading.value = true;
-  await signInWithGoogle();
-  $q.notify('로그인에 성공하였습니다.');
-  emit('closeDialog');
+  try {
+    await signInWithGoogle();
+    $q.notify('로그인에 성공하였습니다.');
+    emit('closeDialog');
+  } catch ({code}) {
+    getErrorMessage(code);
+  }
 }
 // Email Login
 const handleSignInEmail = async () => {
-
-  if(form.value.email && form.value.password) {
-    try {
-      isLoading.value = true;
-      const user = await signInWithEmail(form.value);
-      $q.notify(`${user.displayName}님 환영합니다.`);
-      emit('closeDialog');
-    } catch({code}) {
-        $q.notify({
-          type: 'negative',
-          message: getErrorMessage(code),
-        });
-    } finally {
-      isLoading.value = false;
-    }
-  } else {
-    $q.notify({
-      type: 'negative',
-      message: '이메일/비밀번호를 입력해주세요.'
-    })
+  try {
+    isLoading.value = true;
+    const user = await signInWithEmail(form.value);
+    $q.notify(`${user.displayName}님 환영합니다.`);
+    emit('closeDialog');
+  } catch({code}) {
+    getErrorMessage(code);
+  } finally {
+    isLoading.value = false;
   }
 }
 </script>

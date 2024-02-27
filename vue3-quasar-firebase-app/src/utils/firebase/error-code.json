@@ -1,5 +1,7 @@
 {
+  "auth/user-not-found" : "가입된 이메일이 없습니다.",
   "auth/invalid-email" : "가입된 이메일이 없습니다.",
+  "auth/missing-email" : "이메일을 입력해주세요.",
   "auth/wrong-password" : "비밀번호가 일치하지 않습니다.",
   "auth/missing-password" : "비밀번호를 입력해주세요.",
   "auth/network-request-failed"  : "네트워크 연결이 원활하지 않습니다."

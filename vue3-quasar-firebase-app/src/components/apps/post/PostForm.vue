@@ -14,7 +14,9 @@
           <span class="text-grey-7">카테고리를 선택하세요.</span>
         </template>
       </q-select>
-      <q-input type="textarea" outlined placeholder="내용을 작성해주세요." v-model="contentModel"></q-input>
+
+      <TiptapEditor v-model="contentModel" />
+      <!-- <q-input type="textarea" outlined placeholder="내용을 작성해주세요." v-model="contentModel"></q-input> -->
       <q-input outlined placeholder="태그를 입력해주세요. (입력 후 Enter)" prefix="#" v-model="tagField"></q-input>
       <q-chip
         @remove="removeTag"
@@ -49,7 +51,7 @@
 <script setup>
 import { computed, ref } from 'vue';
 import { getCategories } from 'src/service/category';
-
+import TiptapEditor from '/src/components/tiptab/TiptapEditor.vue';
 const props = defineProps({
   title: {
     type: String,
@@ -79,15 +81,15 @@ const titleModel = computed({
 });
 const contentModel = computed({
   get: () => props.content,
-  set: val => emit('update:title', val)
+  set: val => emit('update:content', val)
 });
 const categoryModel = computed({
   get: () => props.category,
-  set: val => emit('update:title', val)
+  set: val => emit('update:category', val)
 });
 const tagsModel = computed({
   get: () => props.title,
-  set: val => emit('update:title', val)
+  set: val => emit('update:tags', val)
 });
 const tagField = ref('');
 const removeTag = () => console.log('rmvTag');

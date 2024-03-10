@@ -15,7 +15,7 @@ const validatePassword = val => {
 };
 
 const validatePasswordConfirm = (password, passwordConfirm) =>
-  password === passwordConfirm || '비밀번호 값이 일치하지 않습니다!';
+  password === passwordConfirm || '비밀번호 값이 일치하지 않습니다';
 
 export {
   validateRequired,

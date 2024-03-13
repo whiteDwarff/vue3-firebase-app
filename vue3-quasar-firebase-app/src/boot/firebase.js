@@ -2,6 +2,7 @@ import { boot } from 'quasar/wrappers'
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getFirestore } from 'firebase/firestore';
 
 import { userAuthStore } from 'src/stores/auth';
 const firebaseConfig = {
@@ -21,10 +22,14 @@ const analytics = getAnalytics(app);
   Authentication SDK 추가 및 초기화
   https://firebase.google.com/docs/auth/web/start?hl=ko&authuser=0&_gl=1*1va27e2*_up*MQ..*_ga*ODIyMDcwNTA2LjE3MDgyNjExNDc.*_ga_CW55HF8NVT*MTcwODI2MTE0Ny4xLjEuMTcwODI2MTY5Ny4wLjAuMA..
 */
+// auth instance 생성 (사용자 관리 )
 const auth = getAuth(app);
+// firestore instance 생성 ( 문서관리 )
+const db = getFirestore(app);
 
+// 전역으로 사용 
 export {
-  auth,
+  auth, db
 }
 
 export default boot(async (/* { app, router, ... } */) => {

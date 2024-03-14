@@ -1,34 +1,28 @@
 <template>
   <!-- q-item에 :to="" 속성 사용 시 <div>가 아닌 <a>로 렌더링 된다. -->
-  <q-item
-    :to="`posts/${id}`"
-    class="bg-white q-pt-md"
-    clickable
-  >
+  <q-item :to="`posts/${id}`" class="bg-white q-pt-md" clickable>
     <q-item-section avatar top>
       <!-- 유저의 썸네일 -->
       <q-avatar>
-        <img src="https://cdn.quasar.dev/img/boy-avatar.png">
+        <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
       </q-avatar>
     </q-item-section>
 
     <q-item-section>
       <div class="flex items-center">
-        <span>닉네임 &nbsp; &middot; &nbsp; 3일 전</span>
+        <span
+          >닉네임 &nbsp; &middot; &nbsp;
+          {{ date.formatDate(createdAt, 'YY/MM/DD HH:mm:ss') }}</span
+        >
         <q-chip class="q-ml-sm" dense color="primary" text-color="white">
           {{ category }}
         </q-chip>
       </div>
       <div class="text-h6 q-mt-sm">{{ title }}</div>
       <div class="text-primary text-caption">
-        <span
-          v-for="tag of tags" :key="tag"
-          class="q-mr-sm"
-        >
-          #{{ tag }}
-        </span>
+        <span v-for="tag of tags" :key="tag" class="q-mr-sm"> #{{ tag }} </span>
       </div>
-      <div class="text-grey-6 q-my-sm ellipsis-2-lines">{{ content }}</div>
+      <div class="text-grey-6 q-my-sm ellipsis-2-lines" v-html="content"></div>
 
       <!-- icon box -->
       <div class="row items-center">
@@ -43,21 +37,12 @@
         </div>
         <div class="col-3">
           <div class="flex flex-center">
-            <PostIcon
-              name="sym_o_sms"
-              :label="commentCount"
-              tooltip="댓글수"
-            />
+            <PostIcon name="sym_o_sms" :label="commentCount" tooltip="댓글수" />
           </div>
         </div>
         <div class="col-3">
           <div class="flex flex-center">
-            <q-btn
-              @click.prevent
-              class="full-width"
-              flat
-              dense
-            >
+            <q-btn @click.prevent class="full-width" flat dense>
               <PostIcon
                 name="sym_o_favorite"
                 :label="likeCount"
@@ -68,12 +53,7 @@
         </div>
         <div class="col-3">
           <div class="flex flex-center">
-            <q-btn
-              @click.prevent
-              class="full-width"
-              flat
-              dense
-            >
+            <q-btn @click.prevent class="full-width" flat dense>
               <PostIcon
                 name="sym_o_bookmark"
                 :label="bookmarkCount"
@@ -88,50 +68,49 @@
 </template>
 
 <script setup>
+import { date } from 'quasar';
 import PostIcon from './PostIcon.vue';
 
 defineProps({
   id: {
-    type: String
+    type: String,
   },
   title: {
-    type: String
+    type: String,
   },
   content: {
-    type: String
+    type: String,
   },
   readCount: {
     type: Number,
-    default: 0
+    default: 0,
   },
   commentCount: {
     type: Number,
-    default: 0
+    default: 0,
   },
   likeCount: {
     type: Number,
-    default: 0
+    default: 0,
   },
   bookmarkCount: {
     type: Number,
-    default: 0
+    default: 0,
   },
   category: {
-    type: String
+    type: String,
   },
-  createTime: {
-    type: Date
+  createdAt: {
+    type: Date,
   },
   tags: {
     type: Array,
-    default: () => []
+    default: () => [],
   },
   uid: {
-    type: String
-  }
-})
+    type: String,
+  },
+});
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

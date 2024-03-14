@@ -32,7 +32,7 @@ const getInitailForm = () => ({
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { getCategories } from 'src/service/category.js';
-import { createPost } from 'src/service';
+import { createPost, createSequence } from 'src/service';
 import { useAsyncState } from '@vueuse/core';
 import { userAuthStore } from 'src/stores/auth';
 import PostForm from 'src/components/apps/post/PostForm.vue';
@@ -45,12 +45,12 @@ const onHide = () => {
   form.value = getInitailForm();
 };
 
-const { isLoading, execute } = useAsyncState(createPost, null, {
+const { isLoading, execute } = useAsyncState(createSequence, null, {
   immediate: false,
   throwError: true,
-  onSuccess: postId => {
-    console.log('postId', postId);
-    router.push(`/posts/${postId}`);
+  onSuccess: sequence => {
+    createPost(form.value, sequence);
+    router.push(`posts/${sequence}`);
   },
 });
 const handleSubmit = async () => {

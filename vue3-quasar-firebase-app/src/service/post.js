@@ -4,8 +4,24 @@ import {
   collection,
   setDoc,
   doc,
+  getDocs,
   serverTimestamp,
+  getCountFromServer,
+  query,
+  where,
 } from 'firebase/firestore';
+
+/**
+ * @summary : 게시글의 시퀀스 생성
+ * @params  : none
+ * @returns : sequence
+ * @url     : https://firebase.google.com/docs/firestore/query-data/aggregation-queries?hl=ko
+ */
+export async function createSequence() {
+  const coll = collection(db, 'posts');
+  const snapshot = await getCountFromServer(coll);
+  return snapshot.data().count + 1;
+}
 
 /**
  * @summary : 게시글 작성
@@ -13,7 +29,26 @@ import {
  * @parmas  : data
  * @url     : https://firebase.google.com/docs/firestore/manage-data/add-data?hl=ko&_gl=1*1lup03w*_up*MQ..*_ga*MTUwODUzMDQzMi4xNzEwMzI5NTk1*_ga_CW55HF8NVT*MTcxMDMyOTU5NS4xLjAuMTcxMDMyOTU5NS4wLjAuMA..#add_a_document
  */
-export async function createPost(data) {
+export async function createPost(data, sequence) {
+  // setDoc은 document의 id를 지정할 수 있다.
+  await setDoc(
+    doc(db, 'posts', `${sequence}`),
+    {
+      // 등록할 데이터
+      ...data,
+      // 이하 default value
+      readCount: 0,
+      likeCount: 0,
+      commentCount: 0,
+      bookmarkCount: 0,
+      // firebase에서 제공하는 시간 함수
+      createdAt: serverTimestamp(),
+    },
+    {
+      merge: true,
+    },
+  );
+  /*
   // firestore instance, collection name, saveData
   const docRef = await addDoc(collection(db, 'posts'), {
     // 등록할 데이터
@@ -27,16 +62,53 @@ export async function createPost(data) {
     createdAt: serverTimestamp(),
   });
   return docRef.id;
-  /* 
-  --------------------------------------------
-  setDoc은 document의 id를 지정할 수 있다.
-  --------------------------------------------
-  await setDoc(doc(db, 'posts', 'post-id'), {
-    title: 'hello world',
-  }, {
-    merge: true
-  }); 
   */
+}
+/**
+ * @summary : 게시글 불러오기
+ * @role    :
+ * @parmas  : data
+ * @url     : https://firebase.google.com/docs/firestore/query-data/get-data?hl=ko
+ */
+export async function getPosts(params) {
+  /*
+  // getDocs : 컬렉션에 저장된 모든 데이터 조회
+  const querySnapshot = await getDocs(collection(db, 'posts'));
+  // const posts = [];
+  // querySnapshot.forEach(docs => {
+  //   // doc.data() is never undefined for query doc snapshots
+  //   console.log(docs.id, ' => ', docs.data());
+  //   posts.push(docs.data());
+  // });
+  const posts = querySnapshot.docs.map(docs => {
+    const data = docs.data();
+    return {
+      ...data,
+      id: docs.id,
+      createdAt: data.createdAt?.toDate(),
+    };
+  });
+  */
+  // 컬렉션에 있는 문서를 쿼리로 조회
+  const conditions = [];
+  // category의 기본값은 undefind
+  if (params?.category)
+    conditions.push(where('category', '==', params?.category));
+
+  // conditions을 분해 ->  { type(where), op(비교값), value(값) }
+  const q = query(collection(db, 'posts'), ...conditions);
+
+  const querySnapshot = await getDocs(q);
+  const posts = querySnapshot.docs.map(docs => {
+    const data = docs.data();
+    return {
+      ...data,
+      id: docs.id,
+      createdAt: data.createdAt?.toDate(),
+    };
+  });
+  console.log(params, conditions);
+  return posts;
 }
 
 /*

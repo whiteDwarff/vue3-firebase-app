@@ -9,7 +9,11 @@
         <PostList :items="posts" />
       </section>
 
-      <PostRightBar class="col-3" @open-write-dialog="onOpenWriteDialog" />
+      <PostRightBar
+        v-model:tags="params.tags"
+        class="col-3"
+        @open-write-dialog="onOpenWriteDialog"
+      />
     </div>
     <PostWriteDialog v-model="postDialog" />
   </q-page>
@@ -30,6 +34,7 @@ import PostWriteDialog from 'src/components/apps/post/PostWriteDialog.vue';
 const router = useRouter();
 const params = ref({
   category: null,
+  tags: [],
 });
 const goPostDetails = id => router.push(`/posts/${id}`);
 

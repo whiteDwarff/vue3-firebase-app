@@ -31,10 +31,10 @@ const getInitailForm = () => ({
 <script setup>
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { getCategories } from 'src/service/category.js';
 import { createPost, createSequence } from 'src/service';
 import { useAsyncState } from '@vueuse/core';
 import { userAuthStore } from 'src/stores/auth';
+
 import PostForm from 'src/components/apps/post/PostForm.vue';
 
 const authStore = userAuthStore();

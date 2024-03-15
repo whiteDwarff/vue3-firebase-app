@@ -25,7 +25,7 @@
       <TiptapEditor v-model="contentModel" />
 
       <q-input
-        @keypress.enter.prevent="onRegistTag"
+        @keypress.enter.prevent="addTag"
         outlined
         placeholder="태그를 입력해주세요. (입력 후 Enter)"
         prefix="#"
@@ -61,11 +61,13 @@
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, ref, toRef } from 'vue';
 import { getCategories } from 'src/service/category';
-import TiptapEditor from '/src/components/tiptab/TiptapEditor.vue';
 import { validateRequired } from 'src/utils/validate-rules';
 import { useQuasar } from 'quasar';
+import { useTag } from 'src/composables/useTag';
+
+import TiptapEditor from '/src/components/tiptab/TiptapEditor.vue';
 
 const $q = useQuasar();
 
@@ -114,35 +116,14 @@ const tagsModel = computed({
 });
 
 const categories = ref(getCategories());
-/**
- * <q-chip> 태그 추가
- */
-const onRegistTag = e => {
-  const tagValue = e.target.value.replace(/ /g, '');
-  if (!tagValue) return;
 
-  if (props.tags.length >= 10) {
-    return $q.notify({
-      message: '태그는 10개 이상 등록할 수 없습니다.',
-      type: 'warning',
-      textColor: 'white',
-      timeout: 500,
-    });
-  }
-  // tags에 tagValue가 없는 경우 (중복이 아닐때만 등록)
-  if (!props.tags.includes(tagValue))
-    emit('update:tags', [...props.tags, tagValue]);
+const { addTag, removeTag } = useTag({
+  // props의 tags를 반응형으로 꺼낼게 ~
+  tags: toRef(props, 'tags'),
+  updateTags: tags => emit('update:tags', tags),
+  maxLengthMessage: '태그는 10개 이상 등록할 수 없습니다.',
+});
 
-  e.target.value = '';
-};
-/**
- * <q-chip> 태그 삭제
- */
-const removeTag = index => {
-  const model = [...props.tags];
-  model.splice(index, 1);
-  emit('update:tags', model);
-};
 /**
  * <q-form> 제출
  */

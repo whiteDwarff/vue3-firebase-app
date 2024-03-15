@@ -7,18 +7,12 @@
       padding="8px 12px"
       class="full-width"
     >
-      <q-avatar 
-        color="white"
-        text-color="primary"
-        class="q-mr-sm"
-        size="22px"
-      >
-        <q-icon name="edit" size="14px"/>
+      <q-avatar color="white" text-color="primary" class="q-mr-sm" size="22px">
+        <q-icon name="edit" size="14px" />
       </q-avatar>
-      <span
-        @click="$emit('openWriteDialog')"
-        class="text-weight-bold"
-      >새 포스트 작성하기</span>
+      <span @click="$emit('openWriteDialog')" class="text-weight-bold"
+        >새 포스트 작성하기</span
+      >
     </q-btn>
 
     <q-card class="q-mt-md bg-grey-1" bordered flat>
@@ -27,7 +21,6 @@
         <q-space />
         <q-btn icon="refresh" flat dense round size="sm" color="grey"></q-btn>
       </q-card-section>
-
       <q-card-section class="q-bt-sm">
         <q-card class="q-px-sm" bordered flat square>
           <q-input
@@ -35,26 +28,20 @@
             dense
             input-style="font-size: 12px"
             placeholder="태그로 검색해보세요"
+            @keypress.enter.prevent="addTag"
           />
           <div class="q-gutter-sm q-pb-sm">
             <q-btn
+              v-for="(tag, index) in tags"
+              :key="tag"
+              @click="removeTag(index)"
               size="10px"
               padding="2px 4px 2px 7px"
               color="grey-3"
               text-color="dark"
               unelevated
-            > 
-              vuejs
-              <q-icon name="clear" size="12px" color="grey"></q-icon>
-            </q-btn>
-            <q-btn
-              size="10px"
-              padding="2px 4px 2px 7px"
-              color="grey-3"
-              text-color="dark"
-              unelevated
-            > 
-              react
+            >
+              {{ tag }}
               <q-icon name="clear" size="12px" color="grey"></q-icon>
             </q-btn>
           </div>
@@ -62,40 +49,39 @@
       </q-card-section>
 
       <q-list q-padding>
-        <q-item v-for="tag in tags" :key="tag.name" clickable dense>
-          <q-item-section
-            class="text-teal text-caption"
-          >
-            #{{ tag.name }}
+        <q-item clickable dense @click="addTag('vuejs')">
+          <q-item-section class="text-teal text-caption">
+            #vuejs
           </q-item-section>
-          <q-item-section
-            side
-            class="text-teal text-caption"
-          >
-            {{ tag.count }}
+          <q-item-section side class="text-teal text-caption">
+            10
           </q-item-section>
         </q-item>
       </q-list>
-
     </q-card>
   </StickySideBar>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, toRef } from 'vue';
+import { useTag } from 'src/composables/useTag';
+
 import StickySideBar from 'src/components/StickySideBar.vue';
 
+const props = defineProps({
+  tags: {
+    type: Array,
+    default: () => [],
+  },
+});
+const emit = defineEmits(['openWriteDialog', 'update:tags']);
 
-defineEmits(['openWriteDialog'])
-const tags = ref([
-  {name: 'vuejs', count: 10},
-  {name: 'react', count: 53},
-  {name: 'angular', count: 4},
-  {name: 'html', count: 21},
-  {name: 'css', count: 46},
-])
+const { addTag, removeTag } = useTag({
+  // props의 tags를 반응형으로 꺼낼게 ~
+  tags: toRef(props, 'tags'),
+  updateTags: tags => emit('update:tags', tags),
+  maxLengthMessage: '태그는 10개 이상 등록할 수 없습니다.',
+});
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

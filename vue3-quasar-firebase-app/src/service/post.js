@@ -51,15 +51,7 @@ export async function createPost(data, sequence) {
   /*
   // firestore instance, collection name, saveData
   const docRef = await addDoc(collection(db, 'posts'), {
-    // 등록할 데이터
-    ...data,
-    // 이하 default value
-    readCount: 0,
-    likeCount: 0,
-    commentCount: 0,
-    bookmarkCount: 0,
-    // firebase에서 제공하는 시간 함수
-    createdAt: serverTimestamp(),
+    // 등록할 데이터 추가
   });
   return docRef.id;
   */
@@ -69,6 +61,7 @@ export async function createPost(data, sequence) {
  * @role    :
  * @parmas  : data
  * @url     : https://firebase.google.com/docs/firestore/query-data/get-data?hl=ko
+ *             https://firebase.google.com/docs/firestore/query-data/queries?hl=ko#web-modular-api_9
  */
 export async function getPosts(params) {
   /*
@@ -92,8 +85,14 @@ export async function getPosts(params) {
   // 컬렉션에 있는 문서를 쿼리로 조회
   const conditions = [];
   // category의 기본값은 undefind
+  // 카테고리로 검색
   if (params?.category)
     conditions.push(where('category', '==', params?.category));
+
+  // 태그로 검색
+  if (params?.tags && params?.tags.length) {
+    conditions.push(where('tags', 'array-contains-any', params?.tags));
+  }
 
   // conditions을 분해 ->  { type(where), op(비교값), value(값) }
   const q = query(collection(db, 'posts'), ...conditions);

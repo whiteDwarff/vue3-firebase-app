@@ -39,6 +39,7 @@ import PostForm from 'src/components/apps/post/PostForm.vue';
 
 const authStore = userAuthStore();
 const router = useRouter();
+const emit = defineEmits(['complete']);
 
 const form = ref(getInitailForm());
 const onHide = () => {
@@ -50,7 +51,8 @@ const { isLoading, execute } = useAsyncState(createSequence, null, {
   throwError: true,
   onSuccess: sequence => {
     createPost(form.value, sequence);
-    router.push(`posts/${sequence}`);
+    emit('complete');
+    //router.push(`posts/${sequence}`);
   },
 });
 const handleSubmit = async () => {

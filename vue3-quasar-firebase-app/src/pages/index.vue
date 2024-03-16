@@ -3,9 +3,8 @@
   <q-page padding>
     <div class="row q-col-gutter-x-lg">
       <PostLeftBar v-model:category="params.category" class="col-grow" />
-
       <section class="col-7">
-        <PostHeader />
+        <PostHeader v-model:sort="params.sort" />
         <PostList :items="posts" />
       </section>
 
@@ -15,7 +14,10 @@
         @open-write-dialog="onOpenWriteDialog"
       />
     </div>
-    <PostWriteDialog v-model="postDialog" />
+    <PostWriteDialog
+      @complete="completeRegistarationPost"
+      v-model="postDialog"
+    />
   </q-page>
 </template>
 
@@ -35,6 +37,7 @@ const router = useRouter();
 const params = ref({
   category: null,
   tags: [],
+  sort: 'createdAt',
 });
 const goPostDetails = id => router.push(`/posts/${id}`);
 
@@ -57,19 +60,24 @@ const onOpenWriteDialog = () => {
  *  - immediate  : 즉시실행 여부
  *  - throwError : 에러발생 시 예외처리
  */
-const { state: posts, execute } = useAsyncState(getPosts, [], {
-  throwError: true,
-});
-watch(
-  params,
-  () => {
-    execute(0, params.value);
-  },
+const { state: posts, execute } = useAsyncState(
+  () => getPosts(params.value),
+  [],
   {
-    // object인 params를 감시하기 위함
-    deep: true,
+    immediate: false,
+    throwError: true,
   },
 );
+watch(params, () => execute(0, params.value), {
+  // object인 params를 감시하기 위함
+  deep: true,
+  immediate: true,
+});
+
+const completeRegistarationPost = () => {
+  postDialog.value = false;
+  execute(0, params.value);
+};
 </script>
 
 <style lang="scss" scoped></style>

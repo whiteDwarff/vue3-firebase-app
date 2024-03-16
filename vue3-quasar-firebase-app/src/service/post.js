@@ -9,6 +9,7 @@ import {
   getCountFromServer,
   query,
   where,
+  orderBy,
 } from 'firebase/firestore';
 
 /**
@@ -60,8 +61,10 @@ export async function createPost(data, sequence) {
  * @summary : 게시글 불러오기
  * @role    :
  * @parmas  : data
- * @url     : https://firebase.google.com/docs/firestore/query-data/get-data?hl=ko
- *             https://firebase.google.com/docs/firestore/query-data/queries?hl=ko#web-modular-api_9
+ * @url     :
+ *   조회쿼리   https://firebase.google.com/docs/firestore/query-data/get-data?hl=ko
+ *   조건쿼리   https://firebase.google.com/docs/firestore/query-data/queries?hl=ko#web-modular-api_9
+ *   정렬쿼리   https://firebase.google.com/docs/firestore/query-data/order-limit-data?hl=ko
  */
 export async function getPosts(params) {
   /*
@@ -93,6 +96,8 @@ export async function getPosts(params) {
   if (params?.tags && params?.tags.length) {
     conditions.push(where('tags', 'array-contains-any', params?.tags));
   }
+
+  if (params?.sort) conditions.push(orderBy(params.sort, 'desc'));
 
   // conditions을 분해 ->  { type(where), op(비교값), value(값) }
   const q = query(collection(db, 'posts'), ...conditions);

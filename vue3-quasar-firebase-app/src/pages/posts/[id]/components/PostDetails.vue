@@ -1,47 +1,40 @@
 <template>
-    <BaseCard class="q-pa-lg">
-      <div class="flex q-mb-mdd">
-        <q-btn
-          icon="sym_o_arrow_back"
-          flat
-          round
-          dense
-          color="grey"
-          size="16px"
-        />
-        <q-space />
-        <q-btn
-          icon="sym_o_favorite"
-          flat
-          round
-          dense
-          color="red"
-          size="16px"
-        />
-        <q-btn
-          icon="sym_o_bookmark"
-          flat
-          round
-          dense
-          color="blue"
-          size="16px"
-        />
-      </div>
+  <BaseCard class="q-pa-lg">
+    <div class="flex q-mb-mdd">
+      <q-btn
+        @click="$router.back()"
+        icon="sym_o_arrow_back"
+        flat
+        round
+        dense
+        color="grey"
+        size="16px"
+      />
+      <q-space />
+      <q-btn icon="sym_o_favorite" flat round dense color="red" size="16px" />
+      <q-btn icon="sym_o_bookmark" flat round dense color="blue" size="16px" />
+    </div>
 
-      <div class="flex items-center">
-        <q-avatar>
-          <img src="https://cdn.quasar.dev/img/avatar.png">
-        </q-avatar>
-        <div class="q-ml-md">
-          <div>닉네임</div>
-          <div class="text-grey-6">3일 전</div>
+    <div class="flex items-center">
+      <q-avatar>
+        <img src="https://cdn.quasar.dev/img/avatar.png" />
+      </q-avatar>
+      <div class="q-ml-md">
+        <div>닉네임</div>
+        <div class="text-grey-6">
+          {{ date.formatDate(post.createdAt, 'YYYY. MM. DD HH:mm:ss') }}
         </div>
-        <q-space />
-        <!-- 더보기 btn -->
-        <q-btn icon="more_horiz" round flat>
+      </div>
+      <q-space />
+      <!-- 더보기 btn -->
+      <q-btn icon="more_horiz" round flat>
         <q-menu>
           <q-list style="min-width: 100px">
-            <q-item clickable v-close-popup :to="`/posts/${$route.params.id}/edit`">
+            <q-item
+              clickable
+              v-close-popup
+              :to="`/posts/${$route.params.id}/edit`"
+            >
               <q-item-section>수정하기</q-item-section>
             </q-item>
             <q-item clickable v-close-popup>
@@ -50,46 +43,41 @@
           </q-list>
         </q-menu>
       </q-btn>
-      </div>
+    </div>
 
-      <div class="q-mt-md text-h5 text-weight-bold">제목입니다.</div>
-      <!-- icon box -->
-      <div class="row items-center q-gutter-x-md q-mt-md justify-end">
-            <PostIcon
-              name="sym_o_visibility"
-              label="1"
-              tooltip="조회수"
-            />
-            <PostIcon
-              name="sym_o_sms"
-              label="2"
-              tooltip="댓글수"
-            />
-              <PostIcon
-                name="sym_o_favorite"
-                label="3"
-                tooltip="좋아요"
-              />
-              <PostIcon
-                name="sym_o_bookmark"
-                label="4"
-                tooltip="북마크"
-              />
-      </div>
-      <q-separator class="q-my-lg" />
-      <div>
-        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Cumque temporibus ex aliquid totam error aspernatur ratione quam quia magni laboriosam? Perferendis amet corrupti aspernatur illum sit at, asperiores natus reiciendis?
-        Lorem, ipsum dolor sit amet consectetur adipisicing elit. Cumque temporibus ex aliquid totam error aspernatur ratione quam quia magni laboriosam? Perferendis amet corrupti aspernatur illum sit at, asperiores natus reiciendis?
-      </div>
-    </BaseCard>
+    <div class="q-mt-md text-h5 text-weight-bold">{{ post.title }}</div>
+    <div class="text-teal">
+      <span v-for="tag in post.tags" :key="tag"> #{{ tag }}&nbsp; </span>
+      {{ post.category }}
+    </div>
+
+    <!-- icon box -->
+    <div class="row items-center q-gutter-x-md q-mt-md justify-end">
+      <PostIcon name="sym_o_visibility" :label="post.readCount" />
+      <PostIcon name="sym_o_sms" :label="post.commentCounr" />
+      <PostIcon name="sym_o_favorite" :label="post.likeCount" />
+      <PostIcon name="sym_o_bookmark" :label="post.bookmarkCount" />
+    </div>
+    <q-separator class="q-my-lg" />
+
+    <TiptabViewer v-if="post.content" :content="post.content" />
+  </BaseCard>
 </template>
 
 <script setup>
+import { date } from 'quasar';
+import { getPost } from 'src/service';
+import { useAsyncState } from '@vueuse/core';
+import { useRoute } from 'vue-router';
+
 import PostIcon from 'src/components/apps/post/PostIcon.vue';
 import BaseCard from 'src/components/base/BaseCard.vue';
-
+import TiptabViewer from 'src/components/tiptab/TiptabViewer.vue';
+const route = useRoute();
+const { state: post, error } = useAsyncState(
+  () => getPost(route.params.id),
+  {},
+);
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

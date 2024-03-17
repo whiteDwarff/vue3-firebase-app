@@ -1,22 +1,11 @@
 <template>
-    <q-icon
-      v-bind="$attrs"
-      :name="name"
-      color="grey"
-      size="xs"
-    />
-    <span
-      v-if="label"
-      class="text-grey q-ml-xs text-body2"
-    >
-      {{ label }}
-    </span>
-    <q-tooltip
-      v-if="tooltip"
-      :offset="[0, 4]"
-    >
-      {{ tooltip }}
-    </q-tooltip>
+  <q-icon v-bind="$attrs" :name="name" color="grey" size="xs" />
+  <span class="text-grey q-ml-xs text-body2">
+    {{ label }}
+  </span>
+  <q-tooltip v-if="tooltip" :offset="[0, 4]">
+    {{ tooltip }}
+  </q-tooltip>
 </template>
 
 <script setup>
@@ -26,14 +15,12 @@ defineProps({
     required: true,
   },
   label: {
-    type: [String, Number]
+    type: [String, Number],
   },
   tooltip: {
-    type: String
-  }
-})
+    type: String,
+  },
+});
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

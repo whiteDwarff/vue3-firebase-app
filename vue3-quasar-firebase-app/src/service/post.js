@@ -10,7 +10,10 @@ import {
   query,
   where,
   orderBy,
+  getDoc,
+  updateDoc,
 } from 'firebase/firestore';
+import { getErrorMessage } from 'src/utils/firebase/error-message';
 
 /**
  * @summary : 게시글의 시퀀스 생성
@@ -114,7 +117,34 @@ export async function getPosts(params) {
   console.log(params, conditions);
   return posts;
 }
+/**
+ * @summary : 상세 게시글 불러오기
+ * @role    :
+ * @parmas  : id
+ * @url     :  google.com/docs/firestore/query-data/order-limit-data?hl=ko
+ */
+export async function getPost(id) {
+  const docSnap = await getDoc(doc(db, 'posts', id));
 
+  if (!docSnap.exists()) getErrorMessage('문서를 찾을 수 없습니다.');
+
+  return {
+    ...docSnap.data(),
+    createdAt: docSnap.data().createdAt?.toDate(),
+  };
+}
+/**
+ * @summary : 상세 게시글 수정
+ * @role    :
+ * @parmas  : id
+ * @url     :  https://firebase.google.com/docs/firestore/manage-data/add-data?hl=ko
+ */
+export async function updatePost(id, data) {
+  await updateDoc(doc(db, 'posts', id), {
+    ...data,
+    updatedAt: serverTimestamp(),
+  });
+}
 /*
 - collection : DB의 테이블 
 - document   : 데이터의 고유값 (PK ? )

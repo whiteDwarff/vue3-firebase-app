@@ -1,7 +1,6 @@
 <template>
   <q-card class="tiptap" flat bordered>
-
-    <TibTabEdirotMenu :editor="editor"/>
+    <TibTabEdirotMenu :editor="editor" />
 
     <q-separator />
 
@@ -10,19 +9,19 @@
 </template>
 
 <script setup>
-import { useEditor, EditorContent } from '@tiptap/vue-3'
-import StarterKit from '@tiptap/starter-kit'
+import { useEditor, EditorContent } from '@tiptap/vue-3';
+import StarterKit from '@tiptap/starter-kit';
 import Placeholder from '@tiptap/extension-placeholder';
 import Link from '@tiptap/extension-link';
 import Image from '@tiptap/extension-image';
 import { watch } from 'vue';
-import TibTabEdirotMenu from './TibTabEdirotMenu.vue'
+import TibTabEdirotMenu from './TibTabEdirotMenu.vue';
 
 const props = defineProps({
   modelValue: {
     type: String,
     default: '',
-  }
+  },
 });
 const emit = defineEmits(['update:modelValue']);
 
@@ -31,21 +30,24 @@ const editor = useEditor({
   extensions: [
     StarterKit,
     Placeholder.configure({
-      placeholder: '마크다운을 이용해서 편리하게 글을 작성하세요.'
+      placeholder: '마크다운을 이용해서 편리하게 글을 작성하세요.',
     }),
     Link,
-    Image
+    Image,
   ],
   onUpdate: () => {
     emit('update:modelValue', editor.value.getHTML());
-  }
+  },
 });
 
-watch(() => props.modelValue, (value) => {
-  const isSame = editor.value.getHTML() === value;
-  if(isSame) return;
-  editor.value.commands.setContent(value, false);
-})
+watch(
+  () => props.modelValue,
+  value => {
+    const isSame = editor.value.getHTML() === value;
+    if (isSame) return;
+    editor.value.commands.setContent(value, false);
+  },
+);
 </script>
 
 <style lang="scss" src="src/css/tiptap.scss"></style>
@@ -56,5 +58,16 @@ watch(() => props.modelValue, (value) => {
   float: left;
   height: 0;
   pointer-events: none;
+}
+</style>
+<style lang="scss" scoped>
+.editor__content {
+  flex: 1;
+  display: flex;
+  overflow-y: auto;
+  padding: 16px 20px;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  height: 400px;
 }
 </style>

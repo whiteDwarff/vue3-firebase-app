@@ -41,10 +41,10 @@ import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { getPost, updatePost } from 'src/service';
 import { useQuasar } from 'quasar';
+import { useAsyncState } from '@vueuse/core';
 
 import BaseCard from 'src/components/base/BaseCard.vue';
 import PostForm from 'src/components/apps/post/PostForm.vue';
-import { useAsyncState } from '@vueuse/core';
 
 const $q = useQuasar();
 const route = useRoute();
@@ -82,8 +82,26 @@ const { isLoading, execute: executeUpdatePost } = useAsyncState(
 );
 
 const handleSubmit = async () => {
-  if (!confirm('게시글을 수정하시겠습니까?')) return;
-  await executeUpdatePost(1000, route.params.id, form.value);
+  $q.notify({
+    message:
+      '<div class="text-center q-py-sm" style="width: 300px;">게시글을 수정하시겠습니까?</div><hr>',
+    html: true,
+    progress: true,
+    timeout: 4000,
+    actions: [
+      {
+        label: '취소',
+        color: 'red',
+        handler: () => {
+          return;
+        },
+      },
+      {
+        label: '확인',
+        handler: () => executeUpdatePost(2000, route.params.id, form.value),
+      },
+    ],
+  });
 };
 </script>
 

@@ -46,14 +46,14 @@
       <q-card-actions align="right">
         <!-- default slot, 상위 컴포넌트에서 slot 사용 시 기존 내용을 덮어쓴다.-->
         <slot name="actions">
-          <q-btn flat label="취소하기" v-close-popup />
+          <!-- <q-btn flat label="취소하기" v-close-popup />
           <q-btn
             :loading="loading"
             type="submit"
             flat
             label="저장하기"
             color="primary"
-          />
+          /> -->
         </slot>
       </q-card-actions>
     </q-card-section>

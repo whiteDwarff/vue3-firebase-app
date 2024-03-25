@@ -11,7 +11,7 @@
     <q-item-section>
       <div class="flex items-center">
         <span
-          >닉네임 &nbsp; &middot; &nbsp;
+          >{{ displayName }} &nbsp; &middot; &nbsp;
           {{ date.formatDate(createdAt, 'YY/MM/DD HH:mm:ss') }}</span
         >
         <q-chip class="q-ml-sm" dense color="primary" text-color="white">
@@ -107,7 +107,7 @@ defineProps({
     type: Array,
     default: () => [],
   },
-  uid: {
+  displayName: {
     type: String,
   },
 });

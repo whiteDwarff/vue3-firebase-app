@@ -15,7 +15,18 @@
         v-model:tags="form.tags"
         :loading="isLoading"
         @submit="handleSubmit"
-      />
+      >
+        <template #actions>
+          <q-btn flat label="취소하기" v-close-popup />
+          <q-btn
+            :loading="isLoading"
+            type="submit"
+            flat
+            label="저장하기"
+            color="primary"
+          />
+        </template>
+      </PostForm>
     </q-card>
   </q-dialog>
 </template>
@@ -34,8 +45,11 @@ import { useRouter } from 'vue-router';
 import { createPost, createSequence } from 'src/service';
 import { useAsyncState } from '@vueuse/core';
 import { userAuthStore } from 'src/stores/auth';
+import { useQuasar } from 'quasar';
 
 import PostForm from 'src/components/apps/post/PostForm.vue';
+
+const $q = useQuasar();
 
 const authStore = userAuthStore();
 const router = useRouter();
@@ -50,16 +64,24 @@ const { isLoading, execute } = useAsyncState(createSequence, null, {
   immediate: false,
   throwError: true,
   onSuccess: sequence => {
-    createPost(form.value, sequence);
     emit('complete');
-    //router.push(`posts/${sequence}`);
+    createPost(
+      {
+        ...form.value,
+        displayName: authStore?.user?.displayName || null,
+        uid: authStore?.user?.uid || null,
+      },
+      sequence,
+    );
+    $q.notify({
+      message: '등록이 완료되었습니다.',
+      timeout: 500,
+    });
+    router.push(`posts/${sequence}`);
   },
 });
 const handleSubmit = async () => {
-  await execute(1000, {
-    ...form.value,
-    uid: authStore.uid,
-  });
+  await execute(1000, {});
 };
 </script>
 

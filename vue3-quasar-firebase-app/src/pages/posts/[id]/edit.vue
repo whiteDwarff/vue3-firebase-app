@@ -81,7 +81,7 @@ const { isLoading, execute: executeUpdatePost } = useAsyncState(
   },
 );
 
-const handleSubmit = async () => {
+const handleSubmit = () => {
   $q.notify({
     message:
       '<div class="text-center q-py-sm" style="width: 300px;">게시글을 수정하시겠습니까?</div><hr>',
@@ -98,7 +98,7 @@ const handleSubmit = async () => {
       },
       {
         label: '확인',
-        handler: () => executeUpdatePost(2000, route.params.id, form.value),
+        handler: () => executeUpdatePost(1000, route.params.id, form.value),
       },
     ],
   });

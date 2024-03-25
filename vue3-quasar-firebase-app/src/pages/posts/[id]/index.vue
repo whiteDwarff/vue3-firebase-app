@@ -3,9 +3,7 @@
   <q-page padding>
     <PostDetails />
 
-    <q-separator class="q-my-xl"/>
-
-    <TiptabEditor />
+    <q-separator class="q-my-xl" />
 
     <PostComments />
   </q-page>
@@ -16,11 +14,9 @@ import PostDetails from './components/PostDetails.vue';
 import PostComments from './components/PostComments.vue';
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>
 
 <route lang="yaml">
-  meta:
-    width: 800px
+meta:
+  width: 800px
 </route>

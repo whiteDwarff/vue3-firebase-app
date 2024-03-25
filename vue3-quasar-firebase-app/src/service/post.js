@@ -1,6 +1,5 @@
 import { db } from 'boot/firebase';
 import {
-  addDoc,
   collection,
   setDoc,
   doc,
@@ -12,6 +11,7 @@ import {
   orderBy,
   getDoc,
   updateDoc,
+  deleteDoc,
 } from 'firebase/firestore';
 import { getErrorMessage } from 'src/utils/firebase/error-message';
 
@@ -52,13 +52,6 @@ export async function createPost(data, sequence) {
       merge: true,
     },
   );
-  /*
-  // firestore instance, collection name, saveData
-  const docRef = await addDoc(collection(db, 'posts'), {
-    // 등록할 데이터 추가
-  });
-  return docRef.id;
-  */
 }
 /**
  * @summary : 게시글 불러오기
@@ -70,24 +63,6 @@ export async function createPost(data, sequence) {
  *   정렬쿼리   https://firebase.google.com/docs/firestore/query-data/order-limit-data?hl=ko
  */
 export async function getPosts(params) {
-  /*
-  // getDocs : 컬렉션에 저장된 모든 데이터 조회
-  const querySnapshot = await getDocs(collection(db, 'posts'));
-  // const posts = [];
-  // querySnapshot.forEach(docs => {
-  //   // doc.data() is never undefined for query doc snapshots
-  //   console.log(docs.id, ' => ', docs.data());
-  //   posts.push(docs.data());
-  // });
-  const posts = querySnapshot.docs.map(docs => {
-    const data = docs.data();
-    return {
-      ...data,
-      id: docs.id,
-      createdAt: data.createdAt?.toDate(),
-    };
-  });
-  */
   // 컬렉션에 있는 문서를 쿼리로 조회
   const conditions = [];
   // category의 기본값은 undefind
@@ -114,7 +89,6 @@ export async function getPosts(params) {
       createdAt: data.createdAt?.toDate(),
     };
   });
-  console.log(params, conditions);
   return posts;
 }
 /**
@@ -144,6 +118,16 @@ export async function updatePost(id, data) {
     ...data,
     updatedAt: serverTimestamp(),
   });
+}
+
+/**
+ * @summary : 게시글 삭제
+ * @role    :
+ * @parmas  : id
+ * @url     : https://firebase.google.com/docs/firestore/manage-data/delete-data?hl=ko
+ */
+export async function deletePost(id) {
+  await deleteDoc(doc(db, 'posts', id));
 }
 /*
 - collection : DB의 테이블 

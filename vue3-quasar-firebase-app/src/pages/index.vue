@@ -5,7 +5,16 @@
       <PostLeftBar v-model:category="params.category" class="col-grow" />
       <section class="col-7">
         <PostHeader v-model:sort="params.sort" />
-        <PostList :items="posts" />
+
+        <PostList :items="items" />
+
+        <q-btn
+          v-if="isLoadMore"
+          @click="loadMore"
+          class="full-width q-mt-md"
+          label="더보기"
+          outline
+        />
       </section>
 
       <PostRightBar
@@ -34,11 +43,19 @@ import PostRightBar from './components/PostRightBar.vue';
 import PostWriteDialog from 'src/components/apps/post/PostWriteDialog.vue';
 
 const router = useRouter();
+
 const params = ref({
   category: null,
   tags: [],
   sort: 'createdAt',
+  limit: 2,
 });
+const items = ref([]);
+// query 커서의 시작
+const start = ref(null);
+
+const isLoadMore = ref(true);
+
 const goPostDetails = id => router.push(`/posts/${id}`);
 
 const postDialog = ref(false);
@@ -46,37 +63,42 @@ const onOpenWriteDialog = () => {
   postDialog.value = true;
 };
 
-/**
- * ## state
- *  - 반환값, defaultName 설정 가능
- *
- * ## execute
- *  - 변경사항이 생기면 실행되는 메서드
- *
- * ## useAsyncState
- * 1. 실행시킬 메서드
- * 2. 초기값
- * 3. 옵션
- *  - immediate  : 즉시실행 여부
- *  - throwError : 에러발생 시 예외처리
- */
-const { state: posts, execute } = useAsyncState(
-  () => getPosts(params.value),
-  [],
+const { execute } = useAsyncState(getPosts, [], {
+  immediate: false,
+  throwError: true,
+  onSuccess: result => {
+    if (start.value) {
+      items.value = items.value.concat(result.items);
+    } else {
+      items.value = result.items;
+    }
+    isLoadMore.value = result.items.length >= params.value.limit;
+    start.value = result.lastItem;
+  },
+});
+watch(
+  params,
+  () => {
+    start.value = null;
+    execute(0, params.value);
+  },
   {
-    immediate: false,
-    throwError: true,
+    deep: true,
+    immediate: true,
   },
 );
-watch(params, () => execute(0, params.value), {
-  // object인 params를 감시하기 위함
-  deep: true,
-  immediate: true,
-});
 
 const completeRegistarationPost = () => {
   postDialog.value = false;
+  start.value = null;
   execute(0, params.value);
+};
+
+const loadMore = () => {
+  execute(0, {
+    ...params.value,
+    start: start.value,
+  });
 };
 </script>
 

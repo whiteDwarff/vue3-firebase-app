@@ -12,6 +12,8 @@ import {
   getDoc,
   updateDoc,
   deleteDoc,
+  startAfter,
+  limit,
 } from 'firebase/firestore';
 import { getErrorMessage } from 'src/utils/firebase/error-message';
 
@@ -63,6 +65,7 @@ export async function createPost(data, sequence) {
  *   정렬쿼리   https://firebase.google.com/docs/firestore/query-data/order-limit-data?hl=ko
  */
 export async function getPosts(params) {
+  console.log('### params : ', params);
   // 컬렉션에 있는 문서를 쿼리로 조회
   const conditions = [];
   // category의 기본값은 undefind
@@ -70,16 +73,17 @@ export async function getPosts(params) {
   if (params?.category)
     conditions.push(where('category', '==', params?.category));
 
-  // 태그로 검색
-  if (params?.tags && params?.tags.length) {
+  if (params?.tags && params?.tags.length > 0)
     conditions.push(where('tags', 'array-contains-any', params?.tags));
-  }
 
   if (params?.sort) conditions.push(orderBy(params.sort, 'desc'));
 
+  if (params?.start) conditions.push(startAfter(params.start));
+
+  if (params?.limit) conditions.push(limit(params.limit));
+
   // conditions을 분해 ->  { type(where), op(비교값), value(값) }
   const q = query(collection(db, 'posts'), ...conditions);
-
   const querySnapshot = await getDocs(q);
   const posts = querySnapshot.docs.map(docs => {
     const data = docs.data();
@@ -89,13 +93,18 @@ export async function getPosts(params) {
       createdAt: data.createdAt?.toDate(),
     };
   });
-  return posts;
+  const latestDoc = querySnapshot.docs[querySnapshot.docs.length - 1];
+  return {
+    items: posts,
+    lastItem: latestDoc,
+  };
 }
+
 /**
  * @summary : 상세 게시글 불러오기
  * @role    :
  * @parmas  : id
- * @url     :  google.com/docs/firestore/query-data/order-limit-data?hl=ko
+ * @url     : google.com/docs/firestore/query-data/order-limit-data?hl=ko
  */
 export async function getPost(id) {
   const docSnap = await getDoc(doc(db, 'posts', id));
@@ -111,7 +120,7 @@ export async function getPost(id) {
  * @summary : 상세 게시글 수정
  * @role    :
  * @parmas  : id
- * @url     :  https://firebase.google.com/docs/firestore/manage-data/add-data?hl=ko
+ * @url     : https://firebase.google.com/docs/firestore/manage-data/add-data?hl=ko
  */
 export async function updatePost(id, data) {
   await updateDoc(doc(db, 'posts', id), {

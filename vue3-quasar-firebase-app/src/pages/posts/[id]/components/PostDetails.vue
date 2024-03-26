@@ -22,7 +22,11 @@
       <div class="q-ml-md">
         <div>{{ post.displayName }}</div>
         <div class="text-grey-6">
-          {{ date.formatDate(post.createdAt, 'YYYY. MM. DD HH:mm:ss') }}
+          {{
+            formatRelativeTime(
+              date.formatDate(post.createdAt, 'YYYY. MM. DD HH:mm:ss'),
+            )
+          }}
         </div>
       </div>
       <q-space />
@@ -71,6 +75,7 @@ import { useAsyncState } from '@vueuse/core';
 import { useRoute, useRouter } from 'vue-router';
 import { ref } from 'vue';
 import { baseNotify } from 'src/utils/notify';
+import { formatRelativeTime } from 'src/utils/relative-time-format';
 
 import PostIcon from 'src/components/apps/post/PostIcon.vue';
 import BaseCard from 'src/components/base/BaseCard.vue';

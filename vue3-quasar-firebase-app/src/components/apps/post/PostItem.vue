@@ -12,7 +12,7 @@
       <div class="flex items-center">
         <span
           >{{ displayName }} &nbsp; &middot; &nbsp;
-          {{ date.formatDate(createdAt, 'YY/MM/DD HH:mm:ss') }}</span
+          {{ formatRelativeTime(createdAt) }}</span
         >
         <q-chip class="q-ml-sm" dense color="primary" text-color="white">
           {{ category }}
@@ -68,7 +68,8 @@
 </template>
 
 <script setup>
-import { date } from 'quasar';
+import { formatRelativeTime } from 'src/utils/relative-time-format';
+
 import PostIcon from './PostIcon.vue';
 
 defineProps({

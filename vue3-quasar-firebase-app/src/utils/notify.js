@@ -1,11 +1,10 @@
 import { Notify } from 'quasar';
 
 /**
- *
- * @param : `message   * { String || Variable }` 메시지, 필수값
- * @param : `callback  * { Function }` 익명함수 사용, () => { 함수1(); 함수2(); 그 외 로직 }
- * @param : `actions   * { Boolean }` action 유무, 기본값 false
- * @param : `options   * { Object }` 나머지 옵션, 기본값 false
+ * @param { string } message notify 메시지 ( 필수값 )
+ * @param { function() } callback 콜백함수 () => { 함수1, 함수2 }, 기본값 : null
+ * @param { boolean } actions notify actions 사용 유무, 기본값 : false
+ * @param { object } [options=null] 그 외 옵션, 기본값 : null
  */
 export function baseNotify(
   message,
@@ -14,6 +13,7 @@ export function baseNotify(
   options = null,
 ) {
   let option = {};
+
   if (actions) {
     option = {
       ...options,

@@ -22,11 +22,8 @@
       <div class="q-ml-md">
         <div>{{ post.displayName }}</div>
         <div class="text-grey-6">
-          {{
-            formatRelativeTime(
-              date.formatDate(post.createdAt, 'YYYY. MM. DD HH:mm:ss'),
-            )
-          }}
+          {{ post.createdAt }}
+          <!-- {{ date.formatDate(post.createdAt, 'YYYY. MM. DD HH:mm:ss') }} -->
         </div>
       </div>
       <q-space />

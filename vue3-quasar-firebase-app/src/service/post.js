@@ -65,7 +65,6 @@ export async function createPost(data, sequence) {
  *   정렬쿼리   https://firebase.google.com/docs/firestore/query-data/order-limit-data?hl=ko
  */
 export async function getPosts(params) {
-  console.log('### params : ', params);
   // 컬렉션에 있는 문서를 쿼리로 조회
   const conditions = [];
   // category의 기본값은 undefind

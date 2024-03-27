@@ -38,6 +38,11 @@ export function baseNotify(
       ],
     };
   }
+
+  if (options)
+    option = {
+      ...options,
+    };
   Notify.create({
     message,
     html: true,

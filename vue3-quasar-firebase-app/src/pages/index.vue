@@ -2,23 +2,20 @@
   <!-- -->
   <q-page padding>
     <div class="row q-col-gutter-x-lg">
-      <PostLeftBar v-model:category="params.category" class="col-grow" />
+      <PostLeftBar v-model:category="category" class="col-grow" />
       <section class="col-7">
-        <PostHeader v-model:sort="params.sort" />
+        <PostHeader v-model:sort="sort" />
 
         <PostList :items="items" />
-
-        <q-btn
-          v-if="isLoadMore"
-          @click="loadMore"
-          class="full-width q-mt-md"
-          label="더보기"
-          outline
-        />
+        <!--
+           @TODO: vue 프로젝트 제작 시 사용해보기 
+           https://vueuse.org/core/useIntersectionObserver/#useintersectionobserver  
+        -->
+        <div v-intersection-observer="handleIntersectionObserver"></div>
       </section>
 
       <PostRightBar
-        v-model:tags="params.tags"
+        v-model:tags="tags"
         class="col-3"
         @open-write-dialog="onOpenWriteDialog"
       />
@@ -31,10 +28,12 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue';
+import { ref, watch, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { getPosts } from 'src/service';
 import { useAsyncState } from '@vueuse/core';
+import { vIntersectionObserver } from '@vueuse/components';
+import { usePostQuery } from 'src/composables/usePostQuery';
 
 import PostList from 'src/components/apps/post/PostList.vue';
 import PostHeader from './components/PostHeader.vue';
@@ -44,12 +43,14 @@ import PostWriteDialog from 'src/components/apps/post/PostWriteDialog.vue';
 
 const router = useRouter();
 
-const params = ref({
-  category: null,
-  tags: [],
-  sort: 'createdAt',
-  limit: 2,
-});
+const { category, sort, tags } = usePostQuery();
+
+const params = computed(() => ({
+  category: category.value,
+  tags: tags.value,
+  sort: sort.value,
+  limit: 6,
+}));
 const items = ref([]);
 // query 커서의 시작
 const start = ref(null);
@@ -84,7 +85,7 @@ watch(
   },
   {
     deep: true,
-    immediate: true,
+    // immediate: true,
   },
 );
 
@@ -99,6 +100,12 @@ const loadMore = () => {
     ...params.value,
     start: start.value,
   });
+};
+
+const handleIntersectionObserver = ([{ isIntersecting }]) => {
+  if (isIntersecting && isLoadMore.value) {
+    loadMore();
+  }
 };
 </script>
 

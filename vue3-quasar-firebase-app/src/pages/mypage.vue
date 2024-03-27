@@ -1,7 +1,6 @@
 <template>
   <q-page padding>
     <div class="row q-col-gutter-lg">
-      
       <div class="col-4">
         <BaseCard>
           <q-list bordered separator>
@@ -30,16 +29,17 @@
       <div class="col-8">
         <router-view />
       </div>
-
     </div>
   </q-page>
 </template>
 
 <script setup>
 import BaseCard from 'src/components/base/BaseCard.vue';
-
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" scoped></style>
 
-</style>
+<route lang="yaml">
+meta:
+  requiresAuth: true
+</route>

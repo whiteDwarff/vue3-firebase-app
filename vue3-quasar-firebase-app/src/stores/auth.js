@@ -33,10 +33,15 @@ export const userAuthStore = defineStore('auth', () => {
       user.value = null;
     }
   };
+  const hasOneContent = contentUid => {
+    if (!isAuthenticated.value) return false;
+    return uid.value === contentUid;
+  };
   return {
     user,
     setUser,
     isAuthenticated,
     uid,
+    hasOneContent,
   };
 });

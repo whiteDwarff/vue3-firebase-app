@@ -34,6 +34,8 @@ import { getPosts } from 'src/service';
 import { useAsyncState } from '@vueuse/core';
 import { vIntersectionObserver } from '@vueuse/components';
 import { usePostQuery } from 'src/composables/usePostQuery';
+import { userAuthStore } from 'src/stores/auth';
+import { baseNotify } from 'src/utils/notify';
 
 import PostList from 'src/components/apps/post/PostList.vue';
 import PostHeader from './components/PostHeader.vue';
@@ -42,6 +44,7 @@ import PostRightBar from './components/PostRightBar.vue';
 import PostWriteDialog from 'src/components/apps/post/PostWriteDialog.vue';
 
 const router = useRouter();
+const authStore = userAuthStore();
 
 const { category, sort, tags } = usePostQuery();
 
@@ -61,6 +64,10 @@ const goPostDetails = id => router.push(`/posts/${id}`);
 
 const postDialog = ref(false);
 const onOpenWriteDialog = () => {
+  if (!authStore.isAuthenticated)
+    return baseNotify('로그인 후 이용할 수 있습니다.', null, false, {
+      type: 'warning',
+    });
   postDialog.value = true;
 };
 

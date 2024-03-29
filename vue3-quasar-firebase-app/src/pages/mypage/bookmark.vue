@@ -1,25 +1,19 @@
 <template>
-  <PostList :items="posts" />
+  <PostList :items="items" />
 </template>
 
 <script setup>
+import { getUserBookmark } from 'src/service';
+import { userAuthStore } from 'src/stores/auth';
+import { useAsyncState } from '@vueuse/core';
+import { ref } from 'vue';
+
 import PostList from 'src/components/apps/post/PostList.vue';
 
-const posts = Array.from(Array(3), (_, index) =>({
-  id: 'A' + index,
-  title: 'Vue3 Firebase' + index,  
-  content: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempore dolor eos cupiditate beatae, accusantium at veritatis est inventore eveniet omnis porro in rerum quis exercitationem esse, quas autem deserunt nam?',
-  readCount: 1,
-  commentCount: 2,
-  likeCount: 3,
-  bookmarkCount: 4,
-  tags: ['html', 'css', 'javascript'],
-  uid: 'uid',
-  category: '카테고리' + index,
-}));
+const authStore = userAuthStore();
 
+const posts = ref([]);
+const { state: items } = useAsyncState(() => getUserBookmark(authStore.uid));
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

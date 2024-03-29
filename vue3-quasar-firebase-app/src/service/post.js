@@ -14,6 +14,7 @@ import {
   deleteDoc,
   startAfter,
   limit,
+  increment,
 } from 'firebase/firestore';
 import { getErrorMessage } from 'src/utils/firebase/error-message';
 
@@ -111,8 +112,27 @@ export async function getPost(id) {
   if (!docSnap.exists()) getErrorMessage('문서를 찾을 수 없습니다.');
 
   return {
+    id: docSnap.id,
     ...docSnap.data(),
     createdAt: docSnap.data().createdAt?.toDate(),
+  };
+}
+/**
+ * @summary : 조회수 증가
+ * @parmas  : id
+ * @url     : https://firebase.google.com/docs/firestore/manage-data/add-data?hl=ko
+ */
+async function incrementReadPost(postId) {
+  await updateDoc(doc(db, 'posts', postId), {
+    readCount: increment(1),
+  });
+}
+
+export async function getPostDetails(id) {
+  incrementReadPost(id);
+  const post = await getPost(id);
+  return {
+    post,
   };
 }
 /**
@@ -137,6 +157,73 @@ export async function updatePost(id, data) {
 export async function deletePost(id) {
   await deleteDoc(doc(db, 'posts', id));
 }
+/**
+ * @summary : 게시글 좋아요
+ * @parmas  : uid, postId
+ */
+export async function addLike(uid, postId) {
+  await setDoc(doc(db, 'post_likes', `${uid}_${postId}`), {
+    uid,
+    postId,
+    createdAt: serverTimestamp(),
+  });
+}
+/**
+ * @summary : 게시글 좋아요 취소
+ * @parmas  : uid, postId
+ */
+export async function removeLike(uid, postId) {
+  await deleteDoc(doc(db, 'post_likes', `${uid}_${postId}`));
+}
+/**
+ * @summary : 게시글 좋아요 여부
+ * @parmas  : uid, postId
+ */
+export async function hasLike(uid, postId) {
+  const docSnap = await getDoc(doc(db, 'post_likes', `${uid}_${postId}`));
+  return docSnap.exists();
+}
+/**
+ * @summary : 북마크 추가
+ * @parmas  : uid, postId
+ */
+export async function addBookmark(uid, postId) {
+  await setDoc(doc(db, 'users', uid, 'bookmarks', postId), {
+    createdAt: serverTimestamp(),
+  });
+}
+/**
+ * @summary : 북마크 삭제
+ * @parmas  : uid, postId
+ */
+export async function removeBookmark(uid, postId) {
+  await deleteDoc(doc(db, 'users', uid, 'bookmarks', postId));
+}
+/**
+ * @summary : 북마크 추가여부
+ * @parmas  : uid, postId
+ */
+export async function hasBookmark(uid, postId) {
+  const docSnap = await getDoc(doc(db, 'users', uid, 'bookmarks', postId));
+  return docSnap.exists();
+}
+/**
+ * @summary : 북마크한 게시글 목록 들고오기
+ * @parmas  : uid, postId
+ */
+export async function getUserBookmark(uid) {
+  const q = query(
+    collection(db, 'users', uid, 'bookmarks'),
+    orderBy('createdAt', 'desc'),
+    limit(6),
+  );
+  const querySnapshot = await getDocs(q);
+
+  return Promise.all(
+    querySnapshot.docs.map(bookmarkDoc => getPost(bookmarkDoc.id)),
+  );
+}
+
 /*
 - collection : DB의 테이블 
 - document   : 데이터의 고유값 (PK ? )

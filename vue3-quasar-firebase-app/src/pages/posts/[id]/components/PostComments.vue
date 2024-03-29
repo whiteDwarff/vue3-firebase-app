@@ -52,6 +52,7 @@ import { useRoute } from 'vue-router';
 import { useAsyncState } from '@vueuse/core';
 import { userAuthStore } from 'src/stores/auth';
 import { addComment, getComments } from 'src/service';
+import { baseNotify } from 'src/utils/notify';
 
 import CommentList from 'src/components/apps/comments/CommentList.vue';
 import BaseCard from 'src/components/base/BaseCard.vue';
@@ -60,7 +61,14 @@ import { validateRequired } from 'src/utils/validate-rules';
 const authStore = userAuthStore();
 const route = useRoute();
 
-const toggleActive = () => (isActive.value = !isActive.value);
+const toggleActive = () => {
+  if (!isActive.value && !authStore.isAuthenticated)
+    if (!authStore.isAuthenticated)
+      return baseNotify('로그인 후 이용할 수 있습니다.', null, false, {
+        type: 'warning',
+      });
+  isActive.value = !isActive.value;
+};
 const isActive = ref(false);
 const message = ref('');
 

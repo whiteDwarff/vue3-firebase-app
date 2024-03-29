@@ -17,7 +17,7 @@
         {{ message }}
       </div>
     </q-item-section>
-    <q-item-section side top>
+    <q-item-section v-if="hasOneContent(uid)" side top>
       <q-btn
         @click="$emit('delete', id)"
         flat
@@ -32,6 +32,7 @@
 
 <script setup>
 import { date } from 'quasar';
+import { userAuthStore } from 'src/stores/auth';
 defineProps({
   id: {
     type: String,
@@ -46,6 +47,9 @@ defineProps({
     type: String,
   },
 });
+
+const { hasOneContent } = userAuthStore();
+
 defineEmits(['delete']);
 </script>
 

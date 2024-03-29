@@ -1,14 +1,4 @@
 export function formatRelativeTime(time) {
-  if (!(time instanceof Date)) {
-    time = new Date(time);
-    // 만약 변환된 결과가 또한 유효한 Date 객체가 아니면 에러 처리
-    if (isNaN(time.getTime())) {
-      throw new Error(
-        'Invalid input. Please provide a valid Date object or a date string.',
-      );
-    }
-  }
-
   // 국제화와 관련된 JS 객체, 날짜, 시간등...
   const rtf = new Intl.RelativeTimeFormat('ko', {
     /**

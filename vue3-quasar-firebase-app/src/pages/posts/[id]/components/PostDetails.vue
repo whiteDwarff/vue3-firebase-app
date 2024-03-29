@@ -11,7 +11,15 @@
         size="16px"
       />
       <q-space />
-      <q-btn icon="sym_o_favorite" flat round dense color="red" size="16px" />
+      <q-btn
+        :icon="isLike ? 'favorite' : 'sym_o_favorite'"
+        flat
+        round
+        dense
+        color="red"
+        size="16px"
+        @click="toggleLike"
+      />
       <q-btn icon="sym_o_bookmark" flat round dense color="blue" size="16px" />
     </div>
 
@@ -23,12 +31,11 @@
         <div>{{ post.displayName }}</div>
         <div class="text-grey-6">
           {{ post.createdAt }}
-          <!-- {{ date.formatDate(post.createdAt, 'YYYY. MM. DD HH:mm:ss') }} -->
         </div>
       </div>
       <q-space />
       <!-- 더보기 btn -->
-      <q-btn icon="more_horiz" round flat>
+      <q-btn v-if="hasOneContent(post.uid)" icon="more_horiz" round flat>
         <q-menu>
           <q-list style="min-width: 100px">
             <q-item
@@ -56,7 +63,7 @@
     <div class="row items-center q-gutter-x-md q-mt-md justify-end">
       <PostIcon name="sym_o_visibility" :label="post.readCount" />
       <PostIcon name="sym_o_sms" :label="post.commentCount" />
-      <PostIcon name="sym_o_favorite" :label="post.likeCount" />
+      <PostIcon name="sym_o_favorite" :label="likeCount" />
       <PostIcon name="sym_o_bookmark" :label="post.bookmarkCount" />
     </div>
     <q-separator class="q-my-lg" />
@@ -67,12 +74,14 @@
 
 <script setup>
 import { date } from 'quasar';
-import { deletePost, getPost } from 'src/service';
+import { deletePost, getPostDetails } from 'src/service';
 import { useAsyncState } from '@vueuse/core';
 import { useRoute, useRouter } from 'vue-router';
 import { ref } from 'vue';
 import { baseNotify } from 'src/utils/notify';
 import { formatRelativeTime } from 'src/utils/relative-time-format';
+import { userAuthStore } from 'src/stores/auth';
+import { useLike } from 'src/composables/useLike';
 
 import PostIcon from 'src/components/apps/post/PostIcon.vue';
 import BaseCard from 'src/components/base/BaseCard.vue';
@@ -80,10 +89,18 @@ import TiptabViewer from 'src/components/tiptab/TiptabViewer.vue';
 
 const route = useRoute();
 const router = useRouter();
-
-const { state: post, error } = useAsyncState(
-  () => getPost(route.params.id),
+const { hasOneContent } = userAuthStore();
+const post = ref({});
+const { error } = useAsyncState(
+  () => getPostDetails(route.params.id),
   {},
+  {
+    onSuccess: result => {
+      post.value = result.post;
+      post.value.createdAt = formatRelativeTime(post.value.createdAt);
+      updateLikeCount(result.post.likeCount);
+    },
+  },
 );
 const isDeleteState = ref(false);
 
@@ -109,6 +126,10 @@ const handleDeletePost = () => {
     true,
   );
 };
+
+const { isLike, likeCount, toggleLike, updateLikeCount } = useLike(
+  route.params.id,
+);
 </script>
 
 <style lang="scss" scoped></style>

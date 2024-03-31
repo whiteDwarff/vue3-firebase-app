@@ -157,6 +157,7 @@ export async function updatePost(id, data) {
 export async function deletePost(id) {
   await deleteDoc(doc(db, 'posts', id));
 }
+
 /**
  * @summary : 게시글 좋아요
  * @parmas  : uid, postId

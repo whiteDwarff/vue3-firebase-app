@@ -1,5 +1,12 @@
 <template>
   <div v-if="editor" class="flex q-pa-xs">
+    <input
+      ref="fileRef"
+      type="file"
+      accept="*/image"
+      class="hidden"
+      @change="handleChangeFile"
+    />
     <q-btn
       flat
       dense
@@ -56,7 +63,8 @@
       :color="editor.isActive('blockquote') ? 'blue' : null"
     />
     <q-btn flat dense icon="sym_o_image" @click="handleImageMenu" />
-    <q-btn flat dense icon="sym_o_photo_library" />
+    <!-- 파일업로드 template 참조객체의 click() 매서드 사용 -->
+    <q-btn flat dense icon="sym_o_photo_library" @click="fileRef.click()" />
 
     <q-btn
       flat
@@ -118,6 +126,9 @@
 </template>
 
 <script setup>
+import { ref } from 'vue';
+import { uploadImage } from 'src/service';
+
 const props = defineProps({
   editor: {
     type: Object,
@@ -159,6 +170,20 @@ const handleImageMenu = () => {
   if (url) {
     props.editor.chain().focus().setImage({ src: url }).run();
   }
+};
+/**
+ * --------------------------
+ * 파일 업로드 구현
+ */
+const fileRef = ref(null);
+
+const handleChangeFile = async e => {
+  // e.target.files[0]
+  // 파일 업로드
+  const downloadUrl = await uploadImage(e.target.files[0]);
+  props.editor.chain().focus().setImage({ src: downloadUrl }).run();
+
+  e.target.value = '';
 };
 </script>
 

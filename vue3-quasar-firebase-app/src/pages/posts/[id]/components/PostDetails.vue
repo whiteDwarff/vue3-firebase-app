@@ -120,8 +120,8 @@ const handleDeletePost = () => {
   baseNotify(
     message,
     () => {
-      executeDeletePost(0, route.params.id);
       isDeleteState.value = true;
+      executeDeletePost(0, route.params.id);
     },
     true,
   );

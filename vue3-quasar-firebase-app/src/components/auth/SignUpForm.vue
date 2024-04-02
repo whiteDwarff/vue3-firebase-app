@@ -9,57 +9,60 @@
             배열이기 때문에 여러개의 함수 및 검증 사용 가능 
     -->
     <q-form @submit.prevent="handleSubmit" class="q-gutter-y-md">
-      <q-input 
+      <!-- <q-input 
         v-model="form.nickname" 
         placeholder="닉네임" 
         outlined 
         dense
         hide-bottom-space
         :rules="[validateRequired]"
-      />
+      /> -->
 
-      <q-input 
-        v-model="form.email" 
+      <q-input
+        v-model="form.email"
         placeholder="이메일"
-        outlined 
+        outlined
         dense
         hide-bottom-space
         :rules="[validateRequired, validateEmail]"
       />
       <q-input
-        v-model="form.password" 
-        type="password" 
+        v-model="form.password"
+        type="password"
         placeholder="비밀번호(문자, 숫자조합 8자 이상)"
-        outlined 
+        outlined
         dense
         hide-bottom-space
         :rules="[validateRequired, validatePassword]"
       />
       <q-input
-        v-model="passwordConfirm" 
-        type="password" 
+        v-model="passwordConfirm"
+        type="password"
         placeholder="비밀번호 확인"
-        outlined 
+        outlined
         dense
         hide-bottom-space
-        :rules="[validateRequired, val => validatePasswordConfirm(form.password, val)]"
+        :rules="[
+          validateRequired,
+          val => validatePasswordConfirm(form.password, val),
+        ]"
       />
-      <q-btn 
+      <q-btn
         @click="$emit('changeView', 'SignUpForm')"
-        label="가입하기" 
+        label="가입하기"
         type="submit"
-        class="full-width" 
+        class="full-width"
         unelevated
-        color="primary" 
+        color="primary"
         :loading="isLoading"
       />
       <q-separator />
 
-      <q-btn 
+      <q-btn
         @click="$emit('changeView', 'SignInForm')"
         label="로그인하기"
-        class="full-width" 
-        unelevated 
+        class="full-width"
+        unelevated
         flat
       />
     </q-form>
@@ -68,9 +71,14 @@
 
 <script setup>
 import { ref } from 'vue';
-import { useQuasar } from 'quasar'; // 컴포저블 함수 
+import { useQuasar } from 'quasar'; // 컴포저블 함수
 import { signUpWithEmail } from 'src/service';
-import { validateRequired,  validateEmail, validatePassword, validatePasswordConfirm } from 'src/utils/validate-rules';
+import {
+  validateRequired,
+  validateEmail,
+  validatePassword,
+  validatePasswordConfirm,
+} from 'src/utils/validate-rules';
 import { getErrorMessage } from 'src/utils/firebase/error-message';
 
 const emit = defineEmits(['changeView', 'closeDialog']);
@@ -91,21 +99,20 @@ const handleSubmit = async () => {
     await signUpWithEmail(form.value);
     $q.notify({
       // html 속성이 true라면 html 형식으로 notify를 보여줄 수 있다.
-      message:
-      `
+      message: `
       <div class="text-center">
         <span>회원가입이 완료되었습니다.</span> <br>
         <span>이메일에서 인증 링크를 확인해주세요.</span>
         </div>`,
-        html: true,
-      });
-      emit('closeDialog');
-  } catch({code}) {
+      html: true,
+    });
+    emit('closeDialog');
+  } catch ({ code }) {
     getErrorMessage(code);
   } finally {
     isLoading.value = false;
   }
-}
+};
 </script>
 
 <style lang="scss" scoped></style>

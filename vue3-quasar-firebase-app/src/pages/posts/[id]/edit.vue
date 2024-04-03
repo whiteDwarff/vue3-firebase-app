@@ -3,6 +3,7 @@
     <BaseCard>
       <q-toolbar>
         <q-toolbar-title>글쓰기</q-toolbar-title>
+        {{ form.tags }}
       </q-toolbar>
       <q-separator />
       <PostForm

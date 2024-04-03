@@ -7,6 +7,7 @@ const { logger } = functions;
 const {
   onDocumentCreated,
   onDocumentDeleted,
+  onDocumentUpdated,
 } = require('firebase-functions/v2/firestore');
 
 // The Firebase Admin SDK to access Firestore.
@@ -131,3 +132,56 @@ exports.onDeleteUser = functions
   .onDelete(user => {
     db.doc(`users/${user.uid}`).delete();
   });
+
+exports.onCreatePost = onDocumentCreated(
+  {
+    region,
+    document: 'posts/{postId}',
+  },
+  event => {
+    const data = event.data.data();
+    if (data.tags) updateTags(data.tags);
+  },
+);
+
+exports.onDeletePost = onDocumentDeleted(
+  {
+    region,
+    document: 'posts/{postId}',
+  },
+  event => {
+    const data = event.data.data();
+    if (data.tags) updateTags(data.tags, -1);
+  },
+);
+
+exports.onUpdatePost = onDocumentUpdated(
+  {
+    region,
+    document: 'posts/{postId}',
+  },
+  event => {
+    const prevData = event.data.before.data();
+    const data = event.data.after.data();
+
+    const tagsToRemove = differenceTags(prevData.tags, data.tags);
+    const tagsToAdd = differenceTags(data.tags, prevData.tags);
+
+    if (tagsToRemove) updateTags(tagsToRemove, -1);
+    if (tagsToAdd) updateTags(tagsToAdd);
+  },
+);
+
+function updateTags(tag = [], incrementValue = 1) {
+  tag?.forEach(tag => {
+    db.doc(`tags/${tag.toLowerCase()}`).set(
+      { name: tag.toLowerCase(), count: FieldValue.increment(incrementValue) },
+      { maerge: true },
+    );
+  });
+}
+
+function differenceTags(arr1, arr2) {
+  if (!arr1 || !arr2) return arr1;
+  return arr1.filter(value => arr2.includes(value) === false);
+}

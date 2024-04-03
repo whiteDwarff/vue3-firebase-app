@@ -17,6 +17,7 @@ import {
   increment,
 } from 'firebase/firestore';
 import { getErrorMessage } from 'src/utils/firebase/error-message';
+import { getUserById } from 'src/service';
 
 /**
  * @summary : 게시글의 시퀀스 생성
@@ -131,8 +132,10 @@ async function incrementReadPost(postId) {
 export async function getPostDetails(id) {
   incrementReadPost(id);
   const post = await getPost(id);
+  const postUser = await getUserById(post.uid);
   return {
     post,
+    postUser,
   };
 }
 /**

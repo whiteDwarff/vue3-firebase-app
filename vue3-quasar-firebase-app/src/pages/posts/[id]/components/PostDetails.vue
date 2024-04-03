@@ -33,12 +33,12 @@
 
     <div class="flex items-center">
       <q-avatar>
-        <img src="https://cdn.quasar.dev/img/avatar.png" />
+        <img :src="postUser?.photoURL" />
       </q-avatar>
       <div class="q-ml-md">
-        <div>{{ post.displayName }}</div>
+        <div>{{ postUser?.displayName }}</div>
         <div class="text-grey-6">
-          {{ post.createdAt }}
+          {{ postUser?.createdAt }}
         </div>
       </div>
       <q-space />
@@ -99,12 +99,17 @@ import { useBookmark } from 'src/composables/useBookmark';
 const route = useRoute();
 const router = useRouter();
 const { hasOneContent } = userAuthStore();
+
 const post = ref({});
+const postUser = ref({});
+
 const { error } = useAsyncState(
   () => getPostDetails(route.params.id),
   {},
   {
     onSuccess: result => {
+      postUser.value = result.postUser;
+      console.log(postUser.value);
       post.value = result.post;
       post.value.createdAt = formatRelativeTime(post.value.createdAt);
       updateLikeCount(result.post.likeCount);

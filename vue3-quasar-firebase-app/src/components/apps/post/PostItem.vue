@@ -4,16 +4,15 @@
     <q-item-section avatar top>
       <!-- 유저의 썸네일 -->
       <q-avatar>
-        <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+        <img :src="postUser?.photoURL" />
       </q-avatar>
     </q-item-section>
 
     <q-item-section>
       <div class="flex items-center">
-        <span
-          >{{ item.displayName }} &nbsp; &middot; &nbsp;
-          {{ formatRelativeTime(item.createdAt) }}</span
-        >
+        <span>{{ postUser?.displayName }}</span>
+        <span class="q-mx-sm">&middot;</span>
+        <span> {{ formatRelativeTime(item.createdAt) }}</span>
         <q-chip class="q-ml-sm" dense color="primary" text-color="white">
           {{ item.category }}
         </q-chip>
@@ -85,6 +84,8 @@
 import { formatRelativeTime } from 'src/utils/relative-time-format';
 import { useLike } from 'src/composables/useLike';
 import { useBookmark } from 'src/composables/useBookmark';
+import { useAsyncState } from '@vueuse/core';
+import { getUserById } from 'src/service';
 
 import PostIcon from './PostIcon.vue';
 
@@ -103,6 +104,10 @@ const { isBookmark, bookmarkCount, toggleBookmark } = useBookmark(
   {
     initialCount: props.item.bookmarkCount,
   },
+);
+const { state: postUser } = useAsyncState(
+  () => getUserById(props.item.uid),
+  {},
 );
 </script>
 

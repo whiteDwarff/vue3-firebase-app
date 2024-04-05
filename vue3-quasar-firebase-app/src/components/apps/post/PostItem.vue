@@ -12,7 +12,7 @@
       <div class="flex items-center">
         <span>{{ postUser?.displayName }}</span>
         <span class="q-mx-sm">&middot;</span>
-        <span> {{ formatRelativeTime(item.createdAt) }}</span>
+        <span> {{ formatRelativeTime(item?.createdAt) }}</span>
         <q-chip class="q-ml-sm" dense color="primary" text-color="white">
           {{ item.category }}
         </q-chip>

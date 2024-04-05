@@ -228,6 +228,16 @@ export async function getUserBookmark(uid) {
   );
 }
 
+export async function getTags() {
+  const q = query(
+    collection(db, 'tags'),
+    where('count', '>', 0),
+    orderBy('count', 'desc'),
+  );
+
+  const querySnapshot = await getDocs(q);
+  return querySnapshot.docs.map(doc => doc.data());
+}
 /*
 - collection : DB의 테이블 
 - document   : 데이터의 고유값 (PK ? )

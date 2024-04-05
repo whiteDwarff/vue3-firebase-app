@@ -1,4 +1,5 @@
 export function formatRelativeTime(time) {
+  if (!time) return;
   // 국제화와 관련된 JS 객체, 날짜, 시간등...
   const rtf = new Intl.RelativeTimeFormat('ko', {
     /**
